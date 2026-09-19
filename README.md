@@ -11,6 +11,13 @@ enforced cross-system data quality, leakage-free time-series validation, a
 controlled feature ablation, and the translation of model output into
 operational and strategic decisions.
 
+**Live dashboards** (interactive, built from the pipeline's own output):
+
+| | |
+|---|---|
+| **Inventory Operations** &mdash; forward 8 weeks, category grain, daily | https://claude.ai/artifact/1jan7w6LEFmvnbiEQCDM1g |
+| **Retail Performance Review** &mdash; backward 23 months, company grain, monthly | https://claude.ai/artifact/1oTTzRGbfGZRCCthhtzguu |
+
 ---
 
 ## Quick start
@@ -164,12 +171,23 @@ clear the bar, the simpler model goes to production.
 
 ### 5. Two dashboards that would be useless to each other's audience
 
-Both workbooks are **generated** from the pipeline's extracts by
-`scripts/build_tableau_workbooks.py` — a `.twb` is XML, so the dashboards are
-rebuilt by running a script rather than reconstructed by clicking. They cannot
-drift from the data, and the design is reviewable in a diff.
+Both dashboards are **generated** from the pipeline's extracts rather than
+clicked together, so they cannot drift from the data and the design is
+reviewable in a diff.
 
-Full guide: **[docs/tableau_build_guide.md](docs/tableau_build_guide.md)**
+They ship in two forms:
+
+| Form | Built by | Status |
+|---|---|---|
+| **Published web dashboards** (links above) | `scripts/build_web_dashboards.py` | **Verified** &mdash; rendered and checked in a browser |
+| **Tableau workbooks** (`tableau/*.twb`) | `scripts/build_tableau_workbooks.py` | Generated and structurally tested; **never opened in Tableau** |
+
+The `.twb` files are real, generated Tableau XML with 8 tests over their
+structure — but Tableau Public needs an administrator install that was not
+available on the build machine, so nobody has yet opened them. That is stated
+here rather than implied away.
+
+Guides: **[docs/tableau_build_guide.md](docs/tableau_build_guide.md)**
 
 | | Operations | Executive |
 |---|---|---|
@@ -353,9 +371,11 @@ src/retail_intel/
     forecasting/             walk-forward backtest, refit, forecast
     churn/                   ablation, model, scoring
     serving/                 operational and executive extracts
+dashboards/                  web dashboard templates + built pages
 tableau/                     generated .twb workbooks (operations + executive)
 scripts/
-  build_tableau_workbooks.py the dashboard definitions
+  build_web_dashboards.py    payloads + injection for the published pages
+  build_tableau_workbooks.py the Tableau dashboard definitions
   tableau/_twb.py            minimal Tableau .twb XML writer
   sql/01_schema.sql          the relational contract
   load_postgres.py           parent-first load with FKs enforced

@@ -11,7 +11,7 @@ help:
 	@echo "make up         start Postgres + MongoDB"
 	@echo "make sources    build both source systems from data/raw/"
 	@echo "make pipeline   run the full Kedro pipeline"
-	@echo "make dashboards generate both Tableau workbooks from the extracts"
+	@echo "make dashboards generate the Tableau workbooks and the web dashboards"
 	@echo "make knime-figures  reference figures to verify the KNIME workflow"
 	@echo "make test       run the test suite"
 	@echo "make all        up -> sources -> pipeline"
@@ -51,6 +51,7 @@ serving:     ; $(KEDRO) run --pipeline=serving
 
 dashboards:
 	$(PY) scripts/build_tableau_workbooks.py
+	$(PY) scripts/build_web_dashboards.py
 
 # Reference figures for verifying the KNIME workflow. Deliberately not part of
 # the pipeline -- see docs/knime_workflow.md.

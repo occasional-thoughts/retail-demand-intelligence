@@ -1,0 +1,447 @@
+<title>Inventory Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#eef1f0; --surface:#ffffff; --surface-2:#f6f8f7;
+  --ink:#16211f; --ink-2:#4d5c58; --ink-3:#7a8b86;
+  --rule:#d9e0dd; --rule-strong:#bcc7c3;
+  --accent:#0f6e5c;
+  --critical:#c62828; --warning:#b57a00; --good:#1f7a4d; --info:#1f5fa8;
+  --critical-wash:#fbeceb; --warning-wash:#faf2e2; --good-wash:#eaf4ee; --info-wash:#eaf1fa;
+  --shadow:0 1px 2px rgba(22,33,31,.06),0 8px 24px -16px rgba(22,33,31,.22);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1413; --surface:#171d1c; --surface-2:#1d2523;
+    --ink:#e7ecea; --ink-2:#a3b2ad; --ink-3:#7b8a86;
+    --rule:#2a3331; --rule-strong:#3c4845;
+    --accent:#4bbfa3;
+    --critical:#e35d52; --warning:#be8a12; --good:#2ba36b; --info:#4a8fe0;
+    --critical-wash:#2b1a18; --warning-wash:#2a2313; --good-wash:#14261d; --info-wash:#152232;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1413; --surface:#171d1c; --surface-2:#1d2523;
+  --ink:#e7ecea; --ink-2:#a3b2ad; --ink-3:#7b8a86;
+  --rule:#2a3331; --rule-strong:#3c4845;
+  --accent:#4bbfa3;
+  --critical:#e35d52; --warning:#be8a12; --good:#2ba36b; --info:#4a8fe0;
+  --critical-wash:#2b1a18; --warning-wash:#2a2313; --good-wash:#14261d; --info-wash:#152232;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);
+  font-family:"Source Sans 3",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 56px}
+
+/* ---- header ---------------------------------------------------------- */
+.masthead{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:var(--ground);border-bottom:1px solid var(--rule);margin-bottom:24px}
+.masthead-in{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:18px 14px;
+  display:flex;flex-wrap:wrap;gap:12px 20px;align-items:baseline;justify-content:space-between}
+h1{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:clamp(22px,3.4vw,30px);
+  letter-spacing:-.02em;margin:0;text-wrap:balance}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+.meta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-3);
+  text-align:right;line-height:1.7}
+.theme-btn{font:inherit;font-size:12px;background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--rule-strong);border-radius:999px;padding:4px 12px;cursor:pointer}
+.theme-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- kpi strip ------------------------------------------------------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;
+  margin-bottom:28px}
+.kpi{background:var(--surface);padding:14px 16px 16px}
+.kpi dt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 6px}
+.kpi dd{margin:0;font-family:Archivo,sans-serif;font-weight:700;font-size:26px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1}
+.kpi dd small{display:block;font-family:"Source Sans 3",sans-serif;font-weight:400;font-size:12px;
+  color:var(--ink-2);letter-spacing:0;margin-top:3px}
+.kpi.is-critical dd{color:var(--critical)}
+.kpi.is-warning dd{color:var(--warning)}
+
+/* ---- sections -------------------------------------------------------- */
+section{margin-bottom:34px}
+.sec-head{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:baseline;
+  justify-content:space-between;margin-bottom:12px}
+h2{font-family:Archivo,sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em;margin:0}
+.sec-note{font-size:13px;color:var(--ink-2);max-width:62ch}
+
+/* ---- tables ---------------------------------------------------------- */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  box-shadow:var(--shadow);overflow:hidden}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px}
+th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--surface-2);position:sticky;top:0}
+td{font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left;white-space:normal;min-width:190px}
+th:last-child,td:last-child{text-align:left;white-space:normal;min-width:170px}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--surface-2)}
+.cat{font-weight:600}
+.stripe{border-left:3px solid transparent;padding-left:11px}
+.stripe.s-STOCKOUT,.stripe.s-CRITICAL{border-left-color:var(--critical)}
+.stripe.s-REORDER{border-left-color:var(--warning)}
+.stripe.s-HEALTHY{border-left-color:var(--good)}
+.stripe.s-OVERSTOCK{border-left-color:var(--info)}
+
+/* status: shape + text, never colour alone */
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;font-weight:600;letter-spacing:.06em;padding:2px 9px 2px 7px;border-radius:999px;
+  border:1px solid currentColor}
+.pill::before{content:"";width:7px;height:7px;background:currentColor;flex:none}
+.p-CRITICAL,.p-STOCKOUT{color:var(--critical);background:var(--critical-wash)}
+.p-CRITICAL::before,.p-STOCKOUT::before{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.p-REORDER{color:var(--warning);background:var(--warning-wash)}
+.p-REORDER::before{border-radius:1px;transform:rotate(45deg);width:6px;height:6px}
+.p-HEALTHY{color:var(--good);background:var(--good-wash)}
+.p-HEALTHY::before{border-radius:50%}
+.p-OVERSTOCK{color:var(--info);background:var(--info-wash)}
+.p-OVERSTOCK::before{border-radius:1px}
+.urgent{color:var(--critical);font-weight:600}
+
+/* ---- charts ---------------------------------------------------------- */
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  box-shadow:var(--shadow);padding:16px 18px 12px}
+.card h3{font-family:Archivo,sans-serif;font-size:14.5px;font-weight:600;margin:0 0 2px}
+.card p.sub{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.ax{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink-3)}
+.ax-title{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink-3);
+  letter-spacing:.07em;text-transform:uppercase}
+.grid-line{stroke:var(--rule);stroke-width:1}
+.axis-line{stroke:var(--rule-strong);stroke-width:1}
+.ref-line{stroke:var(--ink-3);stroke-width:1.5;stroke-dasharray:4 4}
+.ref-label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--ink-3)}
+.dot{stroke:var(--surface);stroke-width:2;cursor:pointer}
+.dot-label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--ink-2)}
+.bar{cursor:pointer}
+.bar-label{font-family:"Source Sans 3",sans-serif;font-size:11.5px;fill:var(--ink-2)}
+.bar-value{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 2px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:9px;height:9px;flex:none}
+.legend i.c{border-radius:50%}
+.legend i.t{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.legend i.d{transform:rotate(45deg);width:8px;height:8px}
+
+#tip{position:fixed;z-index:60;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--ink);color:var(--ground);padding:8px 10px;border-radius:7px;
+  font-size:12px;line-height:1.45;max-width:250px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+#tip b{font-family:Archivo,sans-serif;display:block;margin-bottom:3px;font-size:12.5px}
+#tip span{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* ---- footer ---------------------------------------------------------- */
+.note{background:var(--warning-wash);border:1px solid var(--warning);border-left-width:3px;
+  border-radius:8px;padding:12px 15px;font-size:13px;color:var(--ink);margin-top:8px}
+.note b{font-family:Archivo,sans-serif}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px 22px;
+  font-family:"IBM Plex Mono",monospace}
+@media (max-width:560px){
+  .kpi dd{font-size:22px}
+  .meta{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <p class="eyebrow">Olist Brazil &middot; replenishment</p>
+      <h1>Inventory Operations</h1>
+    </div>
+    <div>
+      <div class="meta" id="meta"></div>
+      <button class="theme-btn" id="theme" type="button">Theme</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <dl class="kpis" id="kpis"></dl>
+
+  <section>
+    <div class="sec-head">
+      <h2>Action queue</h2>
+      <p class="sec-note">Only categories needing a decision, ranked by consequence. Everything else on this page explains this list.</p>
+    </div>
+    <div class="panel scroll"><table id="alerts"></table></div>
+  </section>
+
+  <section class="charts">
+    <div class="card">
+      <h3>Cover against lead time</h3>
+      <p class="sub">Below the dashed line, stock runs out before a replacement order can arrive.</p>
+      <div id="scatter"></div>
+      <div class="legend" id="scatter-legend"></div>
+    </div>
+    <div class="card">
+      <h3>Projected shortfall</h3>
+      <p class="sub">Forecast demand over the next 8 weeks minus stock on hand.</p>
+      <div id="shortfall"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Supplier lane risk</h2>
+      <p class="sec-note" id="lane-note"></p>
+    </div>
+    <div class="panel scroll"><table id="lanes"></table></div>
+  </section>
+
+  <p class="note"><b>Simulated stock.</b> Olist publishes no stock ledger, so opening
+  positions are generated from a documented policy &mdash; 6 weeks of cover at a 95%
+  service level. Forecast demand, supplier lead times and delivery performance are all
+  derived from real order data.</p>
+
+  <footer id="foot"></footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script id="payload" type="application/json">__DATA__</script>
+<script>
+(function(){
+  "use strict";
+  var D = JSON.parse(document.getElementById("payload").textContent);
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  /* ---- helpers ------------------------------------------------------- */
+  function el(tag, attrs, text){
+    var n = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function num(v, d){
+    return (v == null || isNaN(v)) ? "–"
+      : v.toLocaleString("en-GB", {minimumFractionDigits:d||0, maximumFractionDigits:d||0});
+  }
+  function statusColor(s){
+    return s === "CRITICAL" || s === "STOCKOUT" ? "var(--critical)"
+         : s === "REORDER"   ? "var(--warning)"
+         : s === "OVERSTOCK" ? "var(--info)" : "var(--good)";
+  }
+  function pill(s){ return '<span class="pill p-' + s + '">' + s + '</span>'; }
+
+  var tip = document.getElementById("tip");
+  function showTip(e, html){
+    tip.innerHTML = html; tip.style.opacity = 1;
+    var r = tip.getBoundingClientRect();
+    var x = Math.min(Math.max(8, e.clientX + 14), window.innerWidth - r.width - 8);
+    var y = Math.max(8, e.clientY - r.height - 12);
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  }
+  function hideTip(){ tip.style.opacity = 0; }
+  function bindTip(node, html){
+    node.addEventListener("mousemove", function(e){ showTip(e, html); });
+    node.addEventListener("mouseleave", hideTip);
+  }
+
+  /* ---- meta + kpis --------------------------------------------------- */
+  var k = D.kpi;
+  document.getElementById("meta").innerHTML =
+    "Forward view &middot; " + k.horizon_weeks + " weeks<br>Built " + D.generated;
+
+  var cards = [
+    {t:"Needs action now", v:num(k.critical + k.reorder),
+     s:k.critical + " critical &middot; " + k.reorder + " reorder",
+     cls:k.critical ? "is-critical" : ""},
+    {t:"Healthy", v:num(k.healthy), s:"of " + k.categories + " categories"},
+    {t:"Units to order", v:num(k.order_units), s:"across flagged categories"},
+    {t:"Projected shortfall", v:num(k.shortfall_units), s:"units over " + k.horizon_weeks + " weeks",
+     cls:"is-warning"},
+    {t:"Inside lead time", v:num(k.inside_lead_time), s:"cannot arrive before stockout",
+     cls:k.inside_lead_time ? "is-critical" : ""},
+    {t:"Forecast error", v:(D.forecast.wape*100).toFixed(1) + "%",
+     s:"WAPE &middot; " + (D.forecast.improvement*100).toFixed(1) + "% better than naive"}
+  ];
+  document.getElementById("kpis").innerHTML = cards.map(function(c){
+    return '<div class="kpi ' + (c.cls||"") + '"><dt>' + c.t + '</dt><dd>' + c.v +
+           '<small>' + c.s + '</small></dd></div>';
+  }).join("");
+
+  /* ---- action queue -------------------------------------------------- */
+  (function(){
+    var head = ["Category","Status","On hand","Reorder pt","Order","Cover (wk)",
+                "Lead time (d)","Days left","Action"];
+    var rows = D.alerts.map(function(r){
+      var late = r.order_by_days <= 0;
+      return '<tr><td class="cat stripe s-' + r.stock_status + '">' + r.category + '</td>' +
+        '<td>' + pill(r.stock_status) + '</td>' +
+        '<td>' + num(r.on_hand_units) + '</td>' +
+        '<td>' + num(r.reorder_point_units) + '</td>' +
+        '<td><b>' + num(r.recommended_order_units) + '</b></td>' +
+        '<td>' + num(r.weeks_of_cover,1) + '</td>' +
+        '<td>' + num(r.lead_time_mean_days,1) + '</td>' +
+        '<td' + (late ? ' class="urgent"' : '') + '>' + num(r.days_to_stockout) + '</td>' +
+        '<td' + (late ? ' class="urgent"' : '') + '>' + r.action + '</td></tr>';
+    }).join("");
+    document.getElementById("alerts").innerHTML =
+      "<thead><tr>" + head.map(function(h){ return "<th>" + h + "</th>"; }).join("") +
+      "</tr></thead><tbody>" + rows + "</tbody>";
+  })();
+
+  /* ---- scatter: cover vs lead time ----------------------------------- */
+  (function(){
+    var data = D.position.filter(function(d){ return d.weeks_of_cover != null; });
+    var W = 520, H = 330, m = {t:14, r:20, b:44, l:50};
+    var iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var xMax = Math.max.apply(null, data.map(function(d){ return d.lead_time_mean_days; })) * 1.08;
+    var yMax = Math.max.apply(null, data.map(function(d){ return d.weeks_of_cover; })) * 1.08;
+    var rMax = Math.max.apply(null, data.map(function(d){ return d.forecast_units_horizon; }));
+    var X = function(v){ return m.l + v / xMax * iw; };
+    var Y = function(v){ return m.t + ih - v / yMax * ih; };
+
+    var svg = el("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
+      "aria-label":"Weeks of stock cover against supplier lead time, by category"});
+
+    var yt = 5, xt = 5, i;
+    for (i = 0; i <= yt; i++){
+      var yv = yMax * i / yt;
+      svg.appendChild(el("line", {x1:m.l, x2:m.l+iw, y1:Y(yv), y2:Y(yv), class:"grid-line"}));
+      svg.appendChild(el("text", {x:m.l-8, y:Y(yv)+3.5, class:"ax", "text-anchor":"end"},
+        yv.toFixed(0)));
+    }
+    for (i = 0; i <= xt; i++){
+      var xv = xMax * i / xt;
+      svg.appendChild(el("text", {x:X(xv), y:m.t+ih+17, class:"ax", "text-anchor":"middle"},
+        xv.toFixed(0)));
+    }
+    svg.appendChild(el("line", {x1:m.l, x2:m.l+iw, y1:m.t+ih, y2:m.t+ih, class:"axis-line"}));
+    svg.appendChild(el("text", {x:m.l+iw, y:m.t+ih+34, class:"ax-title", "text-anchor":"end"},
+      "Lead time (days)"));
+    svg.appendChild(el("text", {x:m.l-38, y:m.t+ih/2, class:"ax-title", "text-anchor":"middle",
+      transform:"rotate(-90 " + (m.l-38) + " " + (m.t+ih/2) + ")"}, "Weeks of cover"));
+
+    /* parity line: cover (weeks) equals lead time (days/7) */
+    var px = Math.min(xMax, yMax*7);
+    svg.appendChild(el("line", {x1:X(0), y1:Y(0), x2:X(px), y2:Y(px/7), class:"ref-line"}));
+    svg.appendChild(el("text", {x:X(px)-4, y:Y(px/7)-7, class:"ref-label", "text-anchor":"end"},
+      "cover = lead time"));
+
+    data.forEach(function(d){
+      var r = 4 + Math.sqrt(d.forecast_units_horizon / rMax) * 11;
+      var c = el("circle", {cx:X(d.lead_time_mean_days), cy:Y(d.weeks_of_cover), r:r,
+        fill:statusColor(d.stock_status), "fill-opacity":.85, class:"dot"});
+      bindTip(c, "<b>" + d.category + "</b>" +
+        "<span>" + d.stock_status + "<br>" +
+        num(d.weeks_of_cover,1) + " weeks cover &middot; " + num(d.lead_time_mean_days,1) + " d lead<br>" +
+        num(d.forecast_units_horizon) + " units forecast</span>");
+      svg.appendChild(c);
+    });
+    /* direct-label only the categories that sit below parity */
+    data.filter(function(d){ return d.weeks_of_cover < d.lead_time_mean_days/7; })
+        .forEach(function(d){
+          svg.appendChild(el("text", {x:X(d.lead_time_mean_days)+10,
+            y:Y(d.weeks_of_cover)+3.5, class:"dot-label"}, d.category));
+        });
+    document.getElementById("scatter").appendChild(svg);
+
+    document.getElementById("scatter-legend").innerHTML =
+      [["Critical","--critical","t"],["Reorder","--warning","d"],
+       ["Healthy","--good","c"],["Overstock","--info",""]].map(function(s){
+        return '<span><i class="' + s[2] + '" style="background:var(' + s[1] + ')"></i>' + s[0] + '</span>';
+      }).join("") + '<span style="color:var(--ink-3)">Bubble size = forecast demand</span>';
+  })();
+
+  /* ---- bars: projected shortfall ------------------------------------- */
+  (function(){
+    var data = D.position.filter(function(d){ return d.projected_shortfall_units > 0; })
+      .sort(function(a,b){ return b.projected_shortfall_units - a.projected_shortfall_units; })
+      .slice(0,12);
+    var rowH = 24, m = {t:8, r:56, b:26, l:158};
+    var W = 520, H = m.t + data.length*rowH + m.b;
+    var max = Math.max.apply(null, data.map(function(d){ return d.projected_shortfall_units; }));
+    var iw = W - m.l - m.r;
+    var svg = el("svg", {viewBox:"0 0 " + W + " " + H, role:"img",
+      "aria-label":"Projected unit shortfall by category over eight weeks"});
+
+    [0,.5,1].forEach(function(f){
+      var x = m.l + iw*f;
+      svg.appendChild(el("line", {x1:x, x2:x, y1:m.t, y2:m.t+data.length*rowH, class:"grid-line"}));
+      svg.appendChild(el("text", {x:x, y:H-8, class:"ax", "text-anchor":"middle"},
+        num(max*f)));
+    });
+
+    data.forEach(function(d, i){
+      var y = m.t + i*rowH, w = Math.max(2, d.projected_shortfall_units/max*iw);
+      svg.appendChild(el("text", {x:m.l-10, y:y+rowH/2+4, class:"bar-label",
+        "text-anchor":"end"}, d.category.length > 22 ? d.category.slice(0,21) + "…" : d.category));
+      var bar = el("rect", {x:m.l, y:y+4, width:w, height:rowH-10, rx:3,
+        fill:statusColor(d.stock_status), class:"bar"});
+      bindTip(bar, "<b>" + d.category + "</b><span>" +
+        num(d.projected_shortfall_units) + " units short<br>" +
+        num(d.forecast_units_horizon) + " forecast &middot; " + num(d.on_hand_units) + " on hand</span>");
+      svg.appendChild(bar);
+      svg.appendChild(el("text", {x:m.l+w+7, y:y+rowH/2+4, class:"bar-value"},
+        num(d.projected_shortfall_units)));
+    });
+    svg.appendChild(el("text", {x:m.l+iw, y:H-8, class:"ax-title", "text-anchor":"end"}, "Units"));
+    document.getElementById("shortfall").appendChild(svg);
+  })();
+
+  /* ---- supplier lanes ------------------------------------------------ */
+  (function(){
+    var s = D.supplier_summary;
+    document.getElementById("lane-note").innerHTML =
+      "Risk here is unpredictability, not slowness. High-risk lanes average " +
+      s.high_p95.toFixed(1) + " days at the 95th percentile against " + s.low_p95.toFixed(1) +
+      " for low-risk lanes &mdash; while their <em>means</em> differ by barely a day. " +
+      s.high + " lanes carry R$" + (s.high_revenue/1e6).toFixed(1) + "M.";
+
+    var head = ["Category","State","Mean (d)","Median (d)","P95 (d)","Variability",
+                "Late rate","Revenue"];
+    var rows = D.supplier.map(function(r){
+      return "<tr><td class=\"cat\">" + r.category + "</td>" +
+        "<td>" + r.seller_state + "</td>" +
+        "<td>" + num(r.lead_time_mean_days,1) + "</td>" +
+        "<td>" + num(r.lead_time_p50_days,1) + "</td>" +
+        "<td><b>" + num(r.lead_time_p95_days,1) + "</b></td>" +
+        "<td>" + r.lead_time_cv.toFixed(2) + "</td>" +
+        "<td>" + (r.late_delivery_rate*100).toFixed(1) + "%</td>" +
+        "<td>R$" + num(r.revenue_exposed/1000) + "k</td></tr>";
+    }).join("");
+    document.getElementById("lanes").innerHTML =
+      "<thead><tr>" + head.map(function(h){ return "<th>" + h + "</th>"; }).join("") +
+      "</tr></thead><tbody>" + rows + "</tbody>";
+  })();
+
+  /* ---- footer + theme ------------------------------------------------ */
+  document.getElementById("foot").innerHTML =
+    ["Source: Olist Brazilian e-commerce, Sep 2016 – Aug 2018",
+     "Forecast WAPE " + D.forecast.wape.toFixed(3) + " vs " + D.forecast.naive_wape.toFixed(3) + " naive",
+     "Lead times from 2,699,671 carrier scan events"]
+      .map(function(t){ return "<span>" + t + "</span>"; }).join("");
+
+  var btn = document.getElementById("theme");
+  btn.addEventListener("click", function(){
+    var root = document.documentElement;
+    var dark = root.getAttribute("data-theme") === "dark" ||
+      (!root.getAttribute("data-theme") &&
+       window.matchMedia("(prefers-color-scheme: dark)").matches);
+    root.setAttribute("data-theme", dark ? "light" : "dark");
+    try { localStorage.setItem("ops-theme", dark ? "light" : "dark"); } catch (e) {}
+  });
+  try {
+    var saved = localStorage.getItem("ops-theme");
+    if (saved) document.documentElement.setAttribute("data-theme", saved);
+  } catch (e) {}
+})();
+</script>

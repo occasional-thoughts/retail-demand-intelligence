@@ -1,0 +1,576 @@
+<title>Retail Performance Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#eef1f0; --surface:#ffffff; --surface-2:#f6f8f7;
+  --ink:#16211f; --ink-2:#4d5c58; --ink-3:#7a8b86;
+  --rule:#d9e0dd; --rule-strong:#bcc7c3;
+  --accent:#0f6e5c; --accent-soft:#e3efeb;
+  --critical:#c62828; --warning:#b57a00; --good:#1f7a4d; --info:#1f5fa8;
+  --critical-wash:#fbeceb; --warning-wash:#faf2e2; --good-wash:#eaf4ee; --info-wash:#eaf1fa;
+  --seq-1:#cfe4dd; --seq-5:#0b4f42;
+  --shadow:0 1px 2px rgba(22,33,31,.06),0 8px 24px -16px rgba(22,33,31,.22);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1413; --surface:#171d1c; --surface-2:#1d2523;
+    --ink:#e7ecea; --ink-2:#a3b2ad; --ink-3:#7b8a86;
+    --rule:#2a3331; --rule-strong:#3c4845;
+    --accent:#4bbfa3; --accent-soft:#16302a;
+    --critical:#e35d52; --warning:#be8a12; --good:#2ba36b; --info:#4a8fe0;
+    --critical-wash:#2b1a18; --warning-wash:#2a2313; --good-wash:#14261d; --info-wash:#152232;
+    --seq-1:#1d3f38; --seq-5:#7fd8c1;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1413; --surface:#171d1c; --surface-2:#1d2523;
+  --ink:#e7ecea; --ink-2:#a3b2ad; --ink-3:#7b8a86;
+  --rule:#2a3331; --rule-strong:#3c4845;
+  --accent:#4bbfa3; --accent-soft:#16302a;
+  --critical:#e35d52; --warning:#be8a12; --good:#2ba36b; --info:#4a8fe0;
+  --critical-wash:#2b1a18; --warning-wash:#2a2313; --good-wash:#14261d; --info-wash:#152232;
+  --seq-1:#1d3f38; --seq-5:#7fd8c1;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);
+  font-family:"Source Sans 3",system-ui,-apple-system,sans-serif;font-size:15.5px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:0 56px}
+
+.masthead{border-bottom:1px solid var(--rule);background:var(--ground);margin-bottom:26px}
+.masthead-in{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:26px 20px;
+  display:flex;flex-wrap:wrap;gap:12px 20px;align-items:baseline;justify-content:space-between}
+h1{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:clamp(24px,4vw,34px);
+  letter-spacing:-.022em;margin:0;text-wrap:balance}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 5px}
+.meta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-3);
+  text-align:right;line-height:1.7}
+.theme-btn{font:inherit;font-size:12px;background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--rule-strong);border-radius:999px;padding:4px 12px;cursor:pointer}
+.theme-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;
+  margin-bottom:34px}
+.kpi{background:var(--surface);padding:15px 16px 17px}
+.kpi dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px}
+.kpi dd{margin:0;font-family:Archivo,sans-serif;font-weight:700;font-size:27px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.1}
+.kpi dd small{display:block;font-family:"Source Sans 3",sans-serif;font-weight:400;font-size:12px;
+  color:var(--ink-2);letter-spacing:0;margin-top:3px}
+
+section{margin-bottom:38px}
+.sec-head{margin-bottom:12px}
+h2{font-family:Archivo,sans-serif;font-weight:600;font-size:19px;letter-spacing:-.015em;margin:0 0 4px}
+.sec-note{font-size:14px;color:var(--ink-2);max-width:66ch;margin:0}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  box-shadow:var(--shadow);padding:18px 20px 14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(430px,1fr));gap:20px}
+
+svg{display:block;width:100%;height:auto;overflow:visible}
+.ax{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink-3)}
+.ax-title{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink-3);
+  letter-spacing:.07em;text-transform:uppercase}
+.grid-line{stroke:var(--rule);stroke-width:1}
+.axis-line{stroke:var(--rule-strong);stroke-width:1}
+.ref-line{stroke:var(--ink-3);stroke-width:1.5;stroke-dasharray:4 4}
+.ref-label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--ink-3)}
+.dot{stroke:var(--surface);stroke-width:2;cursor:pointer}
+.dot-label{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--ink-2)}
+.bar{cursor:pointer}
+.bar-label{font-family:"Source Sans 3",sans-serif;font-size:11.5px;fill:var(--ink-2)}
+.bar-value{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--ink-2);
+  font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 2px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;flex:none;border-radius:2px}
+.legend i.sq{width:9px;height:9px;border-radius:2px}
+
+table{border-collapse:collapse;width:100%;min-width:400px;font-size:13.5px}
+.scroll{overflow-x:auto}
+th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--surface-2)}
+td{font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--surface-2)}
+.cat{font-weight:600}
+
+.finding{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  border-radius:10px;padding:18px 20px;box-shadow:var(--shadow)}
+.finding h3{font-family:Archivo,sans-serif;font-size:16px;font-weight:600;margin:0 0 6px}
+.finding p{margin:0 0 10px;font-size:14.5px;color:var(--ink-2);max-width:66ch}
+.finding p:last-child{margin-bottom:0}
+.verdict{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--warning);background:var(--warning-wash);
+  border:1px solid var(--warning);border-radius:999px;padding:3px 11px;margin-bottom:10px}
+.ab{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:12px 0}
+.ab div{background:var(--surface-2);border:1px solid var(--rule);border-radius:8px;padding:11px 13px}
+.ab dt{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.ab dd{margin:0;font-family:Archivo,sans-serif;font-weight:700;font-size:21px;
+  font-variant-numeric:tabular-nums}
+.win{color:var(--good)}
+
+#tip{position:fixed;z-index:60;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--ink);color:var(--ground);padding:8px 10px;border-radius:7px;font-size:12px;
+  line-height:1.45;max-width:250px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+#tip b{font-family:Archivo,sans-serif;display:block;margin-bottom:3px;font-size:12.5px}
+#tip span{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--rule);font-size:12.5px;
+  color:var(--ink-3);display:flex;flex-wrap:wrap;gap:6px 22px;font-family:"IBM Plex Mono",monospace}
+@media (max-width:560px){.kpi dd{font-size:23px}.meta{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div>
+      <p class="eyebrow">Olist Brazil &middot; leadership review</p>
+      <h1>Retail Performance Review</h1>
+    </div>
+    <div>
+      <div class="meta" id="meta"></div>
+      <button class="theme-btn" id="theme" type="button">Theme</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <dl class="kpis" id="kpis"></dl>
+
+  <section>
+    <div class="sec-head">
+      <h2>Revenue trajectory</h2>
+      <p class="sec-note">Monthly revenue across 23 complete months. The final partial
+      month is excluded &mdash; the extract stops mid-month, and left in it reads as a collapse.</p>
+    </div>
+    <div class="card">
+      <div id="revenue"></div>
+      <div class="legend" id="revenue-legend"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Where the value sits</h2>
+      <p class="sec-note">Distance above the diagonal is the argument for retention
+      spend: a segment earning more revenue than its share of customers.</p>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div id="segments"></div>
+        <div class="legend" id="segments-legend"></div>
+      </div>
+      <div class="card scroll"><table id="segment-table"></table></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Exposure by state</h2>
+      <p class="sec-note" id="state-note"></p>
+    </div>
+    <div class="card"><div id="states"></div></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Sentiment tracks delivery, not product</h2>
+      <p class="sec-note" id="sent-note"></p>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div id="sentiment"></div>
+        <div class="legend" id="sentiment-legend"></div>
+      </div>
+      <div class="card">
+        <div id="sent-cats"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Does review text earn its place?</h2></div>
+    <div class="finding">
+      <span class="verdict" id="verdict"></span>
+      <p id="ab-question"></p>
+      <dl class="ab" id="ab"></dl>
+      <p id="ab-body"></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Retention targeting</h2>
+      <p class="sec-note">The model is weak in absolute terms, but it orders the base
+      correctly &mdash; which is all a contact list needs.</p>
+    </div>
+    <div class="card scroll"><table id="bands"></table></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script id="payload" type="application/json">__DATA__</script>
+<script>
+(function(){
+  "use strict";
+  var D = JSON.parse(document.getElementById("payload").textContent);
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  function el(tag, attrs, text){
+    var n = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function num(v, d){
+    return (v == null || isNaN(v)) ? "–"
+      : v.toLocaleString("en-GB", {minimumFractionDigits:d||0, maximumFractionDigits:d||0});
+  }
+  function brl(v){
+    return v >= 1e6 ? "R$" + (v/1e6).toFixed(1) + "M"
+         : v >= 1e3 ? "R$" + (v/1e3).toFixed(0) + "k" : "R$" + v.toFixed(0);
+  }
+  function monthLabel(s){
+    var p = s.split("-");
+    return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+p[1]-1]
+      + " " + p[0].slice(2);
+  }
+
+  var tip = document.getElementById("tip");
+  function showTip(e, html){
+    tip.innerHTML = html; tip.style.opacity = 1;
+    var r = tip.getBoundingClientRect();
+    tip.style.left = Math.min(Math.max(8, e.clientX + 14), window.innerWidth - r.width - 8) + "px";
+    tip.style.top = Math.max(8, e.clientY - r.height - 12) + "px";
+  }
+  function bindTip(node, html){
+    node.addEventListener("mousemove", function(e){ showTip(e, html); });
+    node.addEventListener("mouseleave", function(){ tip.style.opacity = 0; });
+  }
+
+  /* ---- meta + kpis --------------------------------------------------- */
+  var k = D.kpi;
+  document.getElementById("meta").innerHTML =
+    "Sep 2016 – Aug 2018<br>Built " + D.generated;
+
+  document.getElementById("kpis").innerHTML = [
+    {t:"Revenue", v:brl(k.revenue), s:k.months + " complete months"},
+    {t:"Orders", v:num(k.orders), s:"across the period"},
+    {t:"Customers", v:num(k.customers), s:"distinct buyers"},
+    {t:"Repeat rate", v:(k.return_rate*100).toFixed(2) + "%", s:"within 180 days"},
+    {t:"Avg order value", v:brl(k.revenue / k.orders), s:"across the period"},
+    {t:"Revenue at risk", v:brl(k.revenue_at_risk), s:"on current trajectory"}
+  ].map(function(c){
+    return '<div class="kpi"><dt>' + c.t + '</dt><dd>' + c.v + '<small>' + c.s + '</small></dd></div>';
+  }).join("");
+
+  /* ---- revenue line -------------------------------------------------- */
+  (function(){
+    var d = D.revenue, W = 900, H = 300, m = {t:14, r:18, b:42, l:62};
+    var iw = W-m.l-m.r, ih = H-m.t-m.b;
+    var max = Math.max.apply(null, d.map(function(r){ return r.revenue; })) * 1.1;
+    var X = function(i){ return m.l + (d.length<2?0:i/(d.length-1)*iw); };
+    var Y = function(v){ return m.t + ih - v/max*ih; };
+    var svg = el("svg", {viewBox:"0 0 "+W+" "+H, role:"img",
+      "aria-label":"Monthly revenue with a three-month moving average"});
+
+    for (var i=0;i<=4;i++){
+      var v = max*i/4;
+      svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:Y(v),y2:Y(v),class:"grid-line"}));
+      svg.appendChild(el("text",{x:m.l-8,y:Y(v)+3.5,class:"ax","text-anchor":"end"},
+        v>=1e6?(v/1e6).toFixed(1)+"M":(v/1e3).toFixed(0)+"k"));
+    }
+    d.forEach(function(r,j){
+      if (j % 3 === 0 || j === d.length-1)
+        svg.appendChild(el("text",{x:X(j),y:m.t+ih+17,class:"ax","text-anchor":"middle"},
+          monthLabel(r.month)));
+    });
+    svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:m.t+ih,y2:m.t+ih,class:"axis-line"}));
+    svg.appendChild(el("text",{x:m.l-46,y:m.t+ih/2,class:"ax-title","text-anchor":"middle",
+      transform:"rotate(-90 "+(m.l-46)+" "+(m.t+ih/2)+")"},"Revenue (BRL)"));
+
+    var area = d.map(function(r,j){ return X(j)+","+Y(r.revenue); }).join(" ");
+    svg.appendChild(el("polygon",{points:m.l+","+(m.t+ih)+" "+area+" "+(m.l+iw)+","+(m.t+ih),
+      fill:"var(--accent)","fill-opacity":.09,stroke:"none"}));
+    svg.appendChild(el("polyline",{points:area,fill:"none",stroke:"var(--accent)",
+      "stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+    svg.appendChild(el("polyline",{
+      points:d.map(function(r,j){ return X(j)+","+Y(r.revenue_3m_ma); }).join(" "),
+      fill:"none",stroke:"var(--ink-3)","stroke-width":2,"stroke-dasharray":"5 4"}));
+
+    d.forEach(function(r,j){
+      var c = el("circle",{cx:X(j),cy:Y(r.revenue),r:4.5,fill:"var(--accent)",class:"dot"});
+      bindTip(c,"<b>"+monthLabel(r.month)+"</b><span>"+brl(r.revenue)+"<br>"+
+        num(r.orders)+" orders &middot; "+brl(r.avg_order_value)+" AOV<br>"+
+        (r.late_delivery_rate*100).toFixed(1)+"% late</span>");
+      svg.appendChild(c);
+    });
+    /* label the peak only */
+    var peak = d.reduce(function(a,b){ return b.revenue>a.revenue?b:a; });
+    var pi = d.indexOf(peak);
+    svg.appendChild(el("text",{x:X(pi),y:Y(peak.revenue)-12,class:"dot-label",
+      "text-anchor":"middle"}, brl(peak.revenue)));
+
+    document.getElementById("revenue").appendChild(svg);
+    document.getElementById("revenue-legend").innerHTML =
+      '<span><i style="background:var(--accent)"></i>Monthly revenue</span>' +
+      '<span><i style="background:var(--ink-3)"></i>3-month average</span>';
+  })();
+
+  /* ---- segment scatter ----------------------------------------------- */
+  (function(){
+    var d = D.segments, W=480, H=380, m={t:14,r:20,b:46,l:52};
+    var iw=W-m.l-m.r, ih=H-m.t-m.b;
+    var max = Math.max(
+      Math.max.apply(null,d.map(function(r){return r.revenue_share_pct;})),
+      Math.max.apply(null,d.map(function(r){return r.customer_share_pct;}))) * 1.15;
+    var X=function(v){return m.l+v/max*iw;}, Y=function(v){return m.t+ih-v/max*ih;};
+    var rMax = Math.max.apply(null,d.map(function(r){return r.revenue;}));
+    var svg = el("svg",{viewBox:"0 0 "+W+" "+H,role:"img",
+      "aria-label":"Revenue share against customer share by segment"});
+
+    for (var i=0;i<=4;i++){
+      var v=max*i/4;
+      svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:Y(v),y2:Y(v),class:"grid-line"}));
+      svg.appendChild(el("text",{x:m.l-8,y:Y(v)+3.5,class:"ax","text-anchor":"end"},v.toFixed(0)+"%"));
+      svg.appendChild(el("text",{x:X(v),y:m.t+ih+17,class:"ax","text-anchor":"middle"},v.toFixed(0)+"%"));
+    }
+    svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:m.t+ih,y2:m.t+ih,class:"axis-line"}));
+    svg.appendChild(el("line",{x1:X(0),y1:Y(0),x2:X(max),y2:Y(max),class:"ref-line"}));
+    svg.appendChild(el("text",{x:X(max)-6,y:Y(max)+14,class:"ref-label","text-anchor":"end"},
+      "parity"));
+    svg.appendChild(el("text",{x:m.l+iw,y:m.t+ih+34,class:"ax-title","text-anchor":"end"},
+      "Share of customers"));
+    svg.appendChild(el("text",{x:m.l-38,y:m.t+ih/2,class:"ax-title","text-anchor":"middle",
+      transform:"rotate(-90 "+(m.l-38)+" "+(m.t+ih/2)+")"},"Share of revenue"));
+
+    d.forEach(function(r){
+      var rad = 5 + Math.sqrt(r.revenue/rMax)*14;
+      var above = r.revenue_share_pct > r.customer_share_pct;
+      var c = el("circle",{cx:X(r.customer_share_pct),cy:Y(r.revenue_share_pct),r:rad,
+        fill:above?"var(--accent)":"var(--ink-3)","fill-opacity":.8,class:"dot"});
+      bindTip(c,"<b>"+r.segment+"</b><span>"+
+        r.revenue_share_pct.toFixed(1)+"% of revenue<br>"+
+        r.customer_share_pct.toFixed(1)+"% of customers<br>"+
+        num(r.customers)+" customers &middot; "+brl(r.revenue)+"<br>"+
+        "value index "+r.value_index.toFixed(2)+"</span>");
+      svg.appendChild(c);
+      svg.appendChild(el("text",{x:X(r.customer_share_pct),y:Y(r.revenue_share_pct)-rad-5,
+        class:"dot-label","text-anchor":"middle"}, r.segment));
+    });
+    document.getElementById("segments").appendChild(svg);
+    document.getElementById("segments-legend").innerHTML =
+      '<span><i class="sq" style="background:var(--accent)"></i>Earns above parity</span>' +
+      '<span><i class="sq" style="background:var(--ink-3)"></i>Below parity</span>' +
+      '<span style="color:var(--ink-3)">Bubble = revenue</span>';
+
+    var head=["Segment","Customers","Revenue","Index","Repeat"];
+    document.getElementById("segment-table").innerHTML =
+      "<thead><tr>"+head.map(function(h){return "<th>"+h+"</th>";}).join("")+"</tr></thead><tbody>"+
+      d.map(function(r){
+        return "<tr><td class=\"cat\">"+r.segment+"</td><td>"+num(r.customers)+"</td><td>"+
+          brl(r.revenue)+"</td><td>"+r.value_index.toFixed(2)+"</td><td>"+
+          (r.return_rate*100).toFixed(1)+"%</td></tr>";
+      }).join("")+"</tbody>";
+  })();
+
+  /* ---- states -------------------------------------------------------- */
+  (function(){
+    var d = D.states;
+    document.getElementById("state-note").innerHTML =
+      "The top three states carry " +
+      (d[0].share_of_total_exposure + d[1].share_of_total_exposure +
+       d[2].share_of_total_exposure).toFixed(0) +
+      "% of all revenue at risk. Colour shows late-delivery rate &mdash; the hypothesis " +
+      "is that exposure follows fulfilment.";
+
+    var rowH=26, m={t:8,r:70,b:28,l:52}, W=900;
+    var H=m.t+d.length*rowH+m.b;
+    var max=Math.max.apply(null,d.map(function(r){return r.revenue_at_risk;}));
+    var iw=W-m.l-m.r;
+    var lateMax=Math.max.apply(null,d.map(function(r){return r.late_delivery_rate;}));
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img",
+      "aria-label":"Revenue at risk by state, shaded by late delivery rate"});
+
+    [0,.25,.5,.75,1].forEach(function(f){
+      var x=m.l+iw*f;
+      svg.appendChild(el("line",{x1:x,x2:x,y1:m.t,y2:m.t+d.length*rowH,class:"grid-line"}));
+      svg.appendChild(el("text",{x:x,y:H-9,class:"ax","text-anchor":"middle"},brl(max*f)));
+    });
+    d.forEach(function(r,i){
+      var y=m.t+i*rowH, w=Math.max(2,r.revenue_at_risk/max*iw);
+      var t=lateMax?r.late_delivery_rate/lateMax:0;
+      svg.appendChild(el("text",{x:m.l-10,y:y+rowH/2+4,class:"bar-label","text-anchor":"end"},r.state));
+      var bar=el("rect",{x:m.l,y:y+4,width:w,height:rowH-10,rx:3,
+        fill:"var(--accent)","fill-opacity":(0.35+t*0.65).toFixed(2),class:"bar"});
+      bindTip(bar,"<b>"+r.state+"</b><span>"+brl(r.revenue_at_risk)+" at risk<br>"+
+        num(r.customers)+" customers &middot; "+brl(r.revenue)+" revenue<br>"+
+        (r.late_delivery_rate*100).toFixed(1)+"% late deliveries</span>");
+      svg.appendChild(bar);
+      svg.appendChild(el("text",{x:m.l+w+8,y:y+rowH/2+4,class:"bar-value"},
+        r.share_of_total_exposure.toFixed(1)+"%"));
+    });
+    svg.appendChild(el("text",{x:m.l+iw,y:H-9,class:"ax-title","text-anchor":"end"},
+      "Revenue at risk"));
+    document.getElementById("states").appendChild(svg);
+  })();
+
+  /* ---- sentiment vs delivery ----------------------------------------- */
+  (function(){
+    var d = D.sentiment_monthly;
+    var xs = d.map(function(r){return r.late_delivery_rate;});
+    var ys = d.map(function(r){return r.avg_sentiment;});
+    var mx = xs.reduce(function(a,b){return a+b;},0)/xs.length;
+    var my = ys.reduce(function(a,b){return a+b;},0)/ys.length;
+    var cov=0, vx=0, vy=0;
+    for (var i=0;i<xs.length;i++){ cov+=(xs[i]-mx)*(ys[i]-my); vx+=Math.pow(xs[i]-mx,2); vy+=Math.pow(ys[i]-my,2); }
+    var r = cov/Math.sqrt(vx*vy);
+
+    document.getElementById("sent-note").innerHTML =
+      "Monthly review sentiment against late-delivery rate, weighted by review volume. " +
+      "Correlation <b>r = " + r.toFixed(2) + "</b>. Reviews are reading logistics " +
+      "performance back to us, which routes the remediation budget to fulfilment rather " +
+      "than to the catalogue.";
+
+    var W=480,H=340,m={t:16,r:22,b:46,l:56};
+    var iw=W-m.l-m.r, ih=H-m.t-m.b;
+    var xMax=Math.max.apply(null,xs)*1.12;
+    var yMin=Math.min.apply(null,ys)*0.88, yMax=Math.max.apply(null,ys)*1.06;
+    var X=function(v){return m.l+v/xMax*iw;};
+    var Y=function(v){return m.t+ih-(v-yMin)/(yMax-yMin)*ih;};
+    var svg=el("svg",{viewBox:"0 0 "+W+" "+H,role:"img",
+      "aria-label":"Monthly sentiment against late delivery rate"});
+
+    for (var j=0;j<=4;j++){
+      var yv=yMin+(yMax-yMin)*j/4;
+      svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:Y(yv),y2:Y(yv),class:"grid-line"}));
+      svg.appendChild(el("text",{x:m.l-8,y:Y(yv)+3.5,class:"ax","text-anchor":"end"},yv.toFixed(2)));
+      var xv=xMax*j/4;
+      svg.appendChild(el("text",{x:X(xv),y:m.t+ih+17,class:"ax","text-anchor":"middle"},
+        (xv*100).toFixed(0)+"%"));
+    }
+    svg.appendChild(el("line",{x1:m.l,x2:m.l+iw,y1:m.t+ih,y2:m.t+ih,class:"axis-line"}));
+    svg.appendChild(el("text",{x:m.l+iw,y:m.t+ih+34,class:"ax-title","text-anchor":"end"},
+      "Late deliveries"));
+    svg.appendChild(el("text",{x:m.l-42,y:m.t+ih/2,class:"ax-title","text-anchor":"middle",
+      transform:"rotate(-90 "+(m.l-42)+" "+(m.t+ih/2)+")"},"Sentiment"));
+
+    /* fitted trend */
+    var slope=cov/vx, icpt=my-slope*mx;
+    svg.appendChild(el("line",{x1:X(0),y1:Y(icpt),x2:X(xMax),y2:Y(icpt+slope*xMax),
+      class:"ref-line"}));
+
+    d.forEach(function(p,i){
+      var t = d.length<2?0:i/(d.length-1);
+      var c=el("circle",{cx:X(p.late_delivery_rate),cy:Y(p.avg_sentiment),r:6,
+        fill:"var(--accent)","fill-opacity":(0.3+t*0.7).toFixed(2),class:"dot"});
+      bindTip(c,"<b>"+monthLabel(p.month)+"</b><span>sentiment "+p.avg_sentiment.toFixed(3)+
+        "<br>"+(p.late_delivery_rate*100).toFixed(1)+"% late<br>"+num(p.reviews)+" reviews</span>");
+      svg.appendChild(c);
+    });
+    document.getElementById("sentiment").appendChild(svg);
+    document.getElementById("sentiment-legend").innerHTML =
+      '<span><i class="sq" style="background:var(--accent);opacity:.35"></i>Earlier months</span>' +
+      '<span><i class="sq" style="background:var(--accent)"></i>Later months</span>' +
+      '<span style="color:var(--ink-3)">Dashed = fitted trend</span>';
+
+    /* weakest categories */
+    var c = D.sentiment_categories;
+    var rowH=23, cm={t:26,r:52,b:24,l:150}, CW=480;
+    var CH=cm.t+c.length*rowH+cm.b;
+    var lo=Math.min.apply(null,c.map(function(x){return x.avg_sentiment;}));
+    var hi=Math.max.apply(null,c.map(function(x){return x.avg_sentiment;}));
+    var span=Math.max(Math.abs(lo),Math.abs(hi));
+    var ciw=CW-cm.l-cm.r;
+    var CX=function(v){return cm.l+(v+span)/(2*span)*ciw;};
+    var s2=el("svg",{viewBox:"0 0 "+CW+" "+CH,role:"img",
+      "aria-label":"Categories with the weakest review sentiment"});
+    s2.appendChild(el("text",{x:cm.l,y:14,class:"ax-title"},"Weakest sentiment by category"));
+    s2.appendChild(el("line",{x1:CX(0),x2:CX(0),y1:cm.t,y2:cm.t+c.length*rowH,class:"axis-line"}));
+    c.forEach(function(r2,i){
+      var y=cm.t+i*rowH;
+      var x0=CX(Math.min(0,r2.avg_sentiment)), x1=CX(Math.max(0,r2.avg_sentiment));
+      s2.appendChild(el("text",{x:cm.l-10,y:y+rowH/2+4,class:"bar-label","text-anchor":"end"},
+        r2.category.length>20?r2.category.slice(0,19)+"…":r2.category));
+      var bar=el("rect",{x:x0,y:y+4,width:Math.max(2,x1-x0),height:rowH-9,rx:3,
+        fill:r2.avg_sentiment<0?"var(--critical)":"var(--good)",class:"bar"});
+      bindTip(bar,"<b>"+r2.category+"</b><span>sentiment "+r2.avg_sentiment.toFixed(3)+
+        "<br>"+num(r2.reviews)+" reviews</span>");
+      s2.appendChild(bar);
+      s2.appendChild(el("text",{x:x1+7,y:y+rowH/2+4,class:"bar-value"},
+        r2.avg_sentiment.toFixed(2)));
+    });
+    document.getElementById("sent-cats").appendChild(s2);
+  })();
+
+  /* ---- ablation ------------------------------------------------------ */
+  (function(){
+    var a = D.ablation;
+    document.getElementById("verdict").textContent =
+      a.ci[0] > 0 ? "Sentiment earns its place" : "Not statistically reliable";
+    document.getElementById("ab-question").textContent = a.question;
+    document.getElementById("ab").innerHTML = [
+      {t:"With sentiment", v:a["with"].roc_auc.toFixed(3), cls:""},
+      {t:"Without sentiment", v:a["without"].roc_auc.toFixed(3),
+       cls:a["without"].roc_auc > a["with"].roc_auc ? "win" : ""},
+      {t:"Difference", v:(a.delta>0?"+":"") + a.delta.toFixed(4), cls:""},
+      {t:"95% interval", v:"[" + a.ci[0].toFixed(3) + ", " + a.ci[1].toFixed(3) + "]", cls:""}
+    ].map(function(c){
+      return '<div><dt>'+c.t+'</dt><dd class="'+c.cls+'">'+c.v+'</dd></div>';
+    }).join("");
+    document.getElementById("ab-body").innerHTML =
+      "Two models, identical rows, split, seed and hyperparameters, differing only in the " +
+      "NLP features. Sentiment made the model <b>worse</b>, and a paired bootstrap over " +
+      "1,000 resamples puts the interval across zero &mdash; so the difference cannot be " +
+      "distinguished from noise in either direction. <b>The simpler model ships.</b> " +
+      "Sentiment still earns its keep as a diagnostic, as the chart above shows.";
+  })();
+
+  /* ---- risk bands ---------------------------------------------------- */
+  (function(){
+    var head=["Risk band","Customers","Actual repeat rate","Lift vs base","Revenue"];
+    document.getElementById("bands").innerHTML =
+      "<thead><tr>"+head.map(function(h){return "<th>"+h+"</th>";}).join("")+"</tr></thead><tbody>"+
+      D.risk_bands.map(function(r){
+        return "<tr><td class=\"cat\">"+r.risk_band+"</td><td>"+num(r.customers)+"</td><td>"+
+          (r.returned*100).toFixed(2)+"%</td><td><b>"+r.lift.toFixed(2)+"×</b></td><td>"+
+          brl(r.revenue)+"</td></tr>";
+      }).join("")+"</tbody>";
+  })();
+
+  document.getElementById("foot").innerHTML =
+    ["Source: Olist Brazilian e-commerce, 99,441 orders",
+     "Churn measured on a 180-day outcome window",
+     "Sentiment scored with a Portuguese lexicon, validated against star ratings"]
+      .map(function(t){ return "<span>"+t+"</span>"; }).join("");
+
+  var btn=document.getElementById("theme");
+  btn.addEventListener("click",function(){
+    var root=document.documentElement;
+    var dark=root.getAttribute("data-theme")==="dark" ||
+      (!root.getAttribute("data-theme") &&
+       window.matchMedia("(prefers-color-scheme: dark)").matches);
+    root.setAttribute("data-theme",dark?"light":"dark");
+    try{ localStorage.setItem("exec-theme",dark?"light":"dark"); }catch(e){}
+  });
+  try{
+    var saved=localStorage.getItem("exec-theme");
+    if(saved) document.documentElement.setAttribute("data-theme",saved);
+  }catch(e){}
+})();
+</script>

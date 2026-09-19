@@ -34,3 +34,6 @@ Book*.twb
 # KNIME
 knime/output/*
 !knime/output/.gitkeep
+
+# built dashboard pages (regenerate with `make dashboards`)
+dashboards/build/
