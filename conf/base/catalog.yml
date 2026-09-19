@@ -1,0 +1,252 @@
+# =====================================================================
+# Data catalog
+#
+# Layers follow the medallion convention:
+#   bronze  raw extracts, one per source system, unmodified
+#   silver  validated, deduplicated, conformed, integrity-checked
+#   gold    analytics-ready marts that the models and dashboards consume
+#
+# The three source-system entries below are the point of the exercise:
+# one relational connector, one document-store connector, one distributed
+# file reader. Each node declares what it needs; nothing opens its own
+# connection.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# SOURCE 1 -- PostgreSQL (relational order-management system)
+# ---------------------------------------------------------------------
+pg_orders:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: >
+    SELECT o.order_id,
+           o.customer_id,
+           c.customer_unique_id,
+           c.customer_state,
+           c.customer_city,
+           c.customer_zip_code_prefix,
+           o.order_status,
+           o.order_purchase_timestamp,
+           o.order_approved_at,
+           o.order_delivered_carrier_date,
+           o.order_delivered_customer_date,
+           o.order_estimated_delivery_date
+    FROM orders o
+    JOIN customers c ON c.customer_id = o.customer_id
+
+pg_order_items:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: >
+    SELECT oi.order_id,
+           oi.order_item_id,
+           oi.product_id,
+           oi.seller_id,
+           oi.shipping_limit_date,
+           oi.price,
+           oi.freight_value,
+           p.product_category_name,
+           COALESCE(t.product_category_name_english, p.product_category_name, 'unknown')
+             AS category,
+           p.product_weight_g,
+           s.seller_state
+    FROM order_items oi
+    JOIN products p ON p.product_id = oi.product_id
+    JOIN sellers  s ON s.seller_id  = oi.seller_id
+    LEFT JOIN category_translation t
+           ON t.product_category_name = p.product_category_name
+
+pg_payments:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: >
+    SELECT order_id,
+           SUM(payment_value)              AS payment_value,
+           MAX(payment_installments)       AS max_installments,
+           COUNT(*)                        AS payment_methods_used,
+           STRING_AGG(DISTINCT payment_type, ',' ORDER BY payment_type) AS payment_types
+    FROM order_payments
+    GROUP BY order_id
+
+pg_review_scores:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: >
+    SELECT review_id, order_id, review_score,
+           review_creation_date, review_answer_timestamp
+    FROM order_reviews
+
+# the set of keys the document store is validated against
+pg_valid_order_ids:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: "SELECT order_id FROM orders"
+
+pg_valid_customer_ids:
+  type: pandas.SQLQueryDataset
+  credentials: postgres
+  sql: "SELECT customer_id FROM customers"
+
+# ---------------------------------------------------------------------
+# SOURCE 2 -- MongoDB (semi-structured review text and browsing sessions)
+# ---------------------------------------------------------------------
+mongo_reviews:
+  type: retail_intel.datasets.mongo_dataset.MongoCollectionDataset
+  collection: product_reviews
+  credentials: mongo
+  projection:
+    _id: 0
+    review_id: 1
+    order_id: 1
+    customer_id: 1
+    review_score: 1
+    title: 1
+    message: 1
+    created_at: 1
+    source: 1
+
+# The nested event array is summarised server-side. Pulling ~2M nested event
+# sub-documents into pandas purely to flatten them would be the wrong shape
+# of work in the wrong place.
+mongo_session_features:
+  type: retail_intel.datasets.mongo_dataset.MongoAggregationDataset
+  collection: web_sessions
+  credentials: mongo
+  pipeline:
+    - $group:
+        _id: "$customer_id"
+        sessions: {$sum: 1}
+        converted_sessions: {$sum: {$cond: ["$converted", 1, 0]}}
+        total_events: {$sum: "$event_count"}
+        first_seen: {$min: "$started_at"}
+        last_seen: {$max: "$started_at"}
+        devices: {$addToSet: "$device"}
+        channels: {$addToSet: "$channel"}
+    # Promote the group key to a named field. A bare `_id` is anonymous once it
+    # reaches pandas, and a node renaming "whatever column came first" is a bug
+    # waiting for the aggregation to change shape.
+    - $set:
+        customer_id: "$_id"
+
+mongo_cart_behaviour:
+  type: retail_intel.datasets.mongo_dataset.MongoAggregationDataset
+  collection: web_sessions
+  credentials: mongo
+  pipeline:
+    - $unwind: "$events"
+    - $match:
+        events.event_type: {$in: ["add_to_cart", "remove_from_cart", "begin_checkout", "product_view"]}
+    - $group:
+        _id:
+          customer_id: "$customer_id"
+          event_type: "$events.event_type"
+        n: {$sum: 1}
+        mean_dwell_ms: {$avg: "$events.dwell_ms"}
+
+# ---------------------------------------------------------------------
+# SOURCE 3 -- flat Parquet at scale, read with Spark
+# ---------------------------------------------------------------------
+# several million carrier scan rows, partitioned by year/month
+scan_events_bronze:
+  type: spark.SparkDataset
+  filepath: data/01_bronze/scan_events
+  file_format: parquet
+  save_args:
+    mode: overwrite
+    partitionBy: [scan_year, scan_month]
+
+# ---------------------------------------------------------------------
+# BRONZE -- source snapshots
+# ---------------------------------------------------------------------
+bronze_orders:       {type: pandas.ParquetDataset, filepath: data/01_bronze/orders.parquet}
+bronze_order_items:  {type: pandas.ParquetDataset, filepath: data/01_bronze/order_items.parquet}
+bronze_reviews:      {type: pandas.ParquetDataset, filepath: data/01_bronze/reviews.parquet}
+bronze_sessions:     {type: pandas.ParquetDataset, filepath: data/01_bronze/sessions.parquet}
+
+# ---------------------------------------------------------------------
+# QUARANTINE -- records that failed referential integrity
+# These are persisted, not dropped: a record that fails a check is evidence
+# of an upstream defect and someone has to be able to look at it.
+# ---------------------------------------------------------------------
+quarantined_reviews:
+  type: pandas.ParquetDataset
+  filepath: data/quarantine/orphaned_reviews.parquet
+
+quarantined_sessions:
+  type: pandas.ParquetDataset
+  filepath: data/quarantine/orphaned_sessions.parquet
+
+integrity_report:
+  type: json.JSONDataset
+  filepath: data/quarantine/integrity_report.json
+
+# ---------------------------------------------------------------------
+# SILVER -- validated and conformed
+# ---------------------------------------------------------------------
+silver_reviews:       {type: pandas.ParquetDataset, filepath: data/02_silver/reviews.parquet}
+silver_sessions:      {type: pandas.ParquetDataset, filepath: data/02_silver/sessions.parquet}
+silver_order_lines:   {type: pandas.ParquetDataset, filepath: data/02_silver/order_lines.parquet}
+silver_lead_times:    {type: pandas.ParquetDataset, filepath: data/02_silver/lead_times.parquet}
+silver_review_sentiment: {type: pandas.ParquetDataset, filepath: data/02_silver/review_sentiment.parquet}
+
+# ---------------------------------------------------------------------
+# GOLD -- analytics marts
+# ---------------------------------------------------------------------
+gold_weekly_demand:      {type: pandas.ParquetDataset, filepath: data/03_gold/weekly_demand.parquet}
+gold_demand_features:    {type: pandas.ParquetDataset, filepath: data/03_gold/demand_features.parquet}
+gold_customer_features:  {type: pandas.ParquetDataset, filepath: data/03_gold/customer_features.parquet}
+gold_rfm_segments:       {type: pandas.ParquetDataset, filepath: data/03_gold/rfm_segments.parquet}
+
+# ---------------------------------------------------------------------
+# MODEL OUTPUTS
+# ---------------------------------------------------------------------
+demand_model:            {type: pickle.PickleDataset, filepath: data/03_gold/demand_model.pkl}
+demand_forecast:         {type: pandas.ParquetDataset, filepath: data/03_gold/demand_forecast.parquet}
+demand_backtest:         {type: pandas.ParquetDataset, filepath: data/03_gold/demand_backtest.parquet}
+demand_metrics:          {type: json.JSONDataset, filepath: data/03_gold/demand_metrics.json}
+
+churn_model:             {type: pickle.PickleDataset, filepath: data/03_gold/churn_model.pkl}
+churn_scores:            {type: pandas.ParquetDataset, filepath: data/03_gold/churn_scores.parquet}
+churn_ablation:          {type: json.JSONDataset, filepath: data/03_gold/churn_ablation.json}
+
+# ---------------------------------------------------------------------
+# REPORTING -- the extracts the two dashboards read
+# ---------------------------------------------------------------------
+ops_inventory_position:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/ops_inventory_position.csv
+  save_args: {index: false}
+
+ops_reorder_alerts:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/ops_reorder_alerts.csv
+  save_args: {index: false}
+
+ops_supplier_risk:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/ops_supplier_risk.csv
+  save_args: {index: false}
+
+exec_revenue_trend:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/exec_revenue_trend.csv
+  save_args: {index: false}
+
+exec_segment_value:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/exec_segment_value.csv
+  save_args: {index: false}
+
+exec_churn_exposure:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/exec_churn_exposure.csv
+  save_args: {index: false}
+
+exec_sentiment_trend:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/exec_sentiment_trend.csv
+  save_args: {index: false}
+
+scan_feed_summary:
+  type: json.JSONDataset
+  filepath: data/01_bronze/scan_feed_summary.json

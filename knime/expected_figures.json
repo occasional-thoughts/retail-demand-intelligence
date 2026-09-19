@@ -1,0 +1,89 @@
+{
+  "note": "Reference figures for verifying the KNIME workflow output. Not part of the Kedro pipeline. A 10% KNIME sample should approximate the rates below, not match the counts.",
+  "source_file": "olist_order_items_dataset.csv",
+  "rows": 112650,
+  "columns": [
+    "order_id",
+    "order_item_id",
+    "product_id",
+    "seller_id",
+    "shipping_limit_date",
+    "price",
+    "freight_value"
+  ],
+  "distinct_orders": 98666,
+  "distinct_products": 32951,
+  "distinct_sellers": 3095,
+  "price_summary": {
+    "min": 0.85,
+    "median": 74.99,
+    "mean": 120.65,
+    "max": 6735.0
+  },
+  "checks": [
+    {
+      "check_name": "primary key uniqueness",
+      "column_checked": "order_id + order_item_id",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "FAIL",
+      "recommendation": "composite PRIMARY KEY on (order_id, order_item_id)"
+    },
+    {
+      "check_name": "non-positive price",
+      "column_checked": "price",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "FAIL",
+      "recommendation": "CHECK (price >= 0) in the schema"
+    },
+    {
+      "check_name": "negative freight",
+      "column_checked": "freight_value",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "FAIL",
+      "recommendation": "CHECK (freight_value >= 0) in the schema"
+    },
+    {
+      "check_name": "missing price",
+      "column_checked": "price",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "FAIL",
+      "recommendation": "NOT NULL in the schema"
+    },
+    {
+      "check_name": "missing freight",
+      "column_checked": "freight_value",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "WARN",
+      "recommendation": "fillna(0) in build_order_lines, row retained"
+    },
+    {
+      "check_name": "price IQR outliers",
+      "column_checked": "price",
+      "rows_examined": 112650,
+      "rows_failed": 8427,
+      "fail_rate_pct": 7.4807,
+      "severity": "WARN",
+      "recommendation": "WAPE not MAPE as the forecast metric, so extremes cannot dominate"
+    },
+    {
+      "check_name": "missing shipping limit",
+      "column_checked": "shipping_limit_date",
+      "rows_examined": 112650,
+      "rows_failed": 0,
+      "fail_rate_pct": 0.0,
+      "severity": "WARN",
+      "recommendation": "nullable TIMESTAMP in the schema"
+    }
+  ],
+  "quality_score": 92.52
+}

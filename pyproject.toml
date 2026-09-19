@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retail_intel"
+version = "0.1.0"
+description = "Retail demand forecasting and inventory intelligence platform"
+requires-python = ">=3.10,<3.12"
+dynamic = ["dependencies"]
+
+[project.scripts]
+retail-intel = "retail_intel.__main__:main"
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.kedro]
+package_name = "retail_intel"
+project_name = "Retail Demand & Inventory Intelligence"
+kedro_init_version = "0.19.9"
+source_dir = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.kedro_telemetry]
+project_id = "f7697c8233e54775a52fab35bb2310ac"

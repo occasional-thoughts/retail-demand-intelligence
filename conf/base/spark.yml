@@ -1,0 +1,11 @@
+# Local Spark tuning. The point of this layer is to process the fulfilment
+# scan feed (several million rows) with a real distributed engine rather than
+# loading it into a single pandas frame -- so the settings here are about
+# keeping a local multi-core run stable, not about cluster sizing.
+spark.driver.memory: 4g
+spark.driver.maxResultSize: 1g
+spark.sql.shuffle.partitions: 16          # 200 is wasteful on one machine
+spark.sql.session.timeZone: UTC
+spark.sql.parquet.compression.codec: snappy
+spark.sql.adaptive.enabled: true
+spark.ui.showConsoleProgress: false

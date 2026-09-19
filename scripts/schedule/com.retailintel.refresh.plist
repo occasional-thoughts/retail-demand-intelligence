@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Scheduled pipeline refresh via launchd (macOS).
+
+  This is the local stand-in for a Fabric Data Factory scheduled pipeline.
+  The scheduling concern is the same in both: run the pipeline on a cadence,
+  capture stdout and stderr somewhere durable, and do not overlap runs.
+
+  Install:   launchctl load  ~/Library/LaunchAgents/com.retailintel.refresh.plist
+  Remove:    launchctl unload ~/Library/LaunchAgents/com.retailintel.refresh.plist
+  Run now:   launchctl start com.retailintel.refresh
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.retailintel.refresh</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/zsh</string>
+        <string>-lc</string>
+        <string>cd $HOME/Downloads/retail-intel &amp;&amp; /opt/anaconda3/envs/retail/bin/kedro run</string>
+    </array>
+
+    <!-- Mondays at 06:00, ahead of the weekly replenishment cycle the
+         operational dashboard supports. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key><integer>1</integer>
+        <key>Hour</key><integer>6</integer>
+        <key>Minute</key><integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/retail-intel-refresh.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/retail-intel-refresh.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

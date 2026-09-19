@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<workbook source-build="2024.1.0" source-platform="mac" version="18.1">
+  <preferences />
+  <datasources>
+    <datasource caption="Reorder Alerts" inline="true" name="federated.9de7fa3a5b35" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="ops_reorder_alerts" name="textscan.dc3b13693f5a">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="ops_reorder_alerts.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.dc3b13693f5a" name="ops_reorder_alerts.csv" table="[ops_reorder_alerts#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="category" ordinal="0" />
+            <column datatype="string" name="stock_status" ordinal="1" />
+            <column datatype="integer" name="urgency_rank" ordinal="2" />
+            <column datatype="real" name="on_hand_units" ordinal="3" />
+            <column datatype="real" name="reorder_point_units" ordinal="4" />
+            <column datatype="real" name="safety_stock_units" ordinal="5" />
+            <column datatype="real" name="recommended_order_units" ordinal="6" />
+            <column datatype="real" name="weeks_of_cover" ordinal="7" />
+            <column datatype="real" name="lead_time_mean_days" ordinal="8" />
+            <column datatype="real" name="lead_time_p95_days" ordinal="9" />
+            <column datatype="real" name="days_to_stockout" ordinal="10" />
+            <column datatype="real" name="order_by_days" ordinal="11" />
+            <column datatype="string" name="action" ordinal="12" />
+            <column datatype="real" name="forecast_units_horizon" ordinal="13" />
+            <column datatype="real" name="projected_shortfall_units" ordinal="14" />
+            <column datatype="boolean" name="simulated_stock" ordinal="15" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+      <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+      <column caption="Urgency Rank" datatype="integer" name="[urgency_rank]" role="measure" type="quantitative" />
+      <column caption="On Hand Units" datatype="real" name="[on_hand_units]" role="measure" type="quantitative" />
+      <column caption="Reorder Point Units" datatype="real" name="[reorder_point_units]" role="measure" type="quantitative" />
+      <column caption="Safety Stock Units" datatype="real" name="[safety_stock_units]" role="measure" type="quantitative" />
+      <column caption="Recommended Order Units" datatype="real" name="[recommended_order_units]" role="measure" type="quantitative" />
+      <column caption="Weeks Of Cover" datatype="real" name="[weeks_of_cover]" role="measure" type="quantitative" />
+      <column caption="Lead Time Mean Days" datatype="real" name="[lead_time_mean_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time P95 Days" datatype="real" name="[lead_time_p95_days]" role="measure" type="quantitative" />
+      <column caption="Days To Stockout" datatype="real" name="[days_to_stockout]" role="measure" type="quantitative" />
+      <column caption="Order By Days" datatype="real" name="[order_by_days]" role="measure" type="quantitative" />
+      <column caption="Action" datatype="string" name="[action]" role="dimension" type="nominal" />
+      <column caption="Forecast Units Horizon" datatype="real" name="[forecast_units_horizon]" role="measure" type="quantitative" />
+      <column caption="Projected Shortfall Units" datatype="real" name="[projected_shortfall_units]" role="measure" type="quantitative" />
+      <column caption="Simulated Stock" datatype="boolean" name="[simulated_stock]" role="dimension" type="nominal" />
+    </datasource>
+    <datasource caption="Inventory Position" inline="true" name="federated.5ed812472a0c" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="ops_inventory_position" name="textscan.01fcac7b059b">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="ops_inventory_position.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.01fcac7b059b" name="ops_inventory_position.csv" table="[ops_inventory_position#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="category" ordinal="0" />
+            <column datatype="real" name="forecast_units_horizon" ordinal="1" />
+            <column datatype="real" name="forecast_units_p95_horizon" ordinal="2" />
+            <column datatype="integer" name="horizon_weeks" ordinal="3" />
+            <column datatype="real" name="forecast_weekly_mean" ordinal="4" />
+            <column datatype="real" name="hist_weekly_mean" ordinal="5" />
+            <column datatype="real" name="hist_weekly_std" ordinal="6" />
+            <column datatype="integer" name="weeks_observed" ordinal="7" />
+            <column datatype="real" name="last_week_units" ordinal="8" />
+            <column datatype="real" name="lead_time_mean_days" ordinal="9" />
+            <column datatype="real" name="lead_time_std_days" ordinal="10" />
+            <column datatype="real" name="lead_time_p95_days" ordinal="11" />
+            <column datatype="real" name="shipments" ordinal="12" />
+            <column datatype="real" name="exception_rate" ordinal="13" />
+            <column datatype="real" name="lead_time_weeks" ordinal="14" />
+            <column datatype="real" name="lead_time_std_weeks" ordinal="15" />
+            <column datatype="real" name="safety_stock_units" ordinal="16" />
+            <column datatype="real" name="cycle_stock_units" ordinal="17" />
+            <column datatype="real" name="reorder_point_units" ordinal="18" />
+            <column datatype="real" name="on_hand_units" ordinal="19" />
+            <column datatype="boolean" name="simulated_stock" ordinal="20" />
+            <column datatype="real" name="weeks_of_cover" ordinal="21" />
+            <column datatype="real" name="cover_vs_leadtime_ratio" ordinal="22" />
+            <column datatype="boolean" name="below_reorder_point" ordinal="23" />
+            <column datatype="real" name="projected_shortfall_units" ordinal="24" />
+            <column datatype="real" name="recommended_order_units" ordinal="25" />
+            <column datatype="string" name="stock_status" ordinal="26" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+      <column caption="Forecast Units Horizon" datatype="real" name="[forecast_units_horizon]" role="measure" type="quantitative" />
+      <column caption="Forecast Units P95 Horizon" datatype="real" name="[forecast_units_p95_horizon]" role="measure" type="quantitative" />
+      <column caption="Horizon Weeks" datatype="integer" name="[horizon_weeks]" role="measure" type="quantitative" />
+      <column caption="Forecast Weekly Mean" datatype="real" name="[forecast_weekly_mean]" role="measure" type="quantitative" />
+      <column caption="Hist Weekly Mean" datatype="real" name="[hist_weekly_mean]" role="measure" type="quantitative" />
+      <column caption="Hist Weekly Std" datatype="real" name="[hist_weekly_std]" role="measure" type="quantitative" />
+      <column caption="Weeks Observed" datatype="integer" name="[weeks_observed]" role="measure" type="quantitative" />
+      <column caption="Last Week Units" datatype="real" name="[last_week_units]" role="measure" type="quantitative" />
+      <column caption="Lead Time Mean Days" datatype="real" name="[lead_time_mean_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time Std Days" datatype="real" name="[lead_time_std_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time P95 Days" datatype="real" name="[lead_time_p95_days]" role="measure" type="quantitative" />
+      <column caption="Shipments" datatype="real" name="[shipments]" role="measure" type="quantitative" />
+      <column caption="Exception Rate" datatype="real" name="[exception_rate]" role="measure" type="quantitative" />
+      <column caption="Lead Time Weeks" datatype="real" name="[lead_time_weeks]" role="measure" type="quantitative" />
+      <column caption="Lead Time Std Weeks" datatype="real" name="[lead_time_std_weeks]" role="measure" type="quantitative" />
+      <column caption="Safety Stock Units" datatype="real" name="[safety_stock_units]" role="measure" type="quantitative" />
+      <column caption="Cycle Stock Units" datatype="real" name="[cycle_stock_units]" role="measure" type="quantitative" />
+      <column caption="Reorder Point Units" datatype="real" name="[reorder_point_units]" role="measure" type="quantitative" />
+      <column caption="On Hand Units" datatype="real" name="[on_hand_units]" role="measure" type="quantitative" />
+      <column caption="Simulated Stock" datatype="boolean" name="[simulated_stock]" role="dimension" type="nominal" />
+      <column caption="Weeks Of Cover" datatype="real" name="[weeks_of_cover]" role="measure" type="quantitative" />
+      <column caption="Cover Vs Leadtime Ratio" datatype="real" name="[cover_vs_leadtime_ratio]" role="measure" type="quantitative" />
+      <column caption="Below Reorder Point" datatype="boolean" name="[below_reorder_point]" role="dimension" type="nominal" />
+      <column caption="Projected Shortfall Units" datatype="real" name="[projected_shortfall_units]" role="measure" type="quantitative" />
+      <column caption="Recommended Order Units" datatype="real" name="[recommended_order_units]" role="measure" type="quantitative" />
+      <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+    </datasource>
+    <datasource caption="Supplier Risk" inline="true" name="federated.46ae42d0309d" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="ops_supplier_risk" name="textscan.9994ab843ec6">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="ops_supplier_risk.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.9994ab843ec6" name="ops_supplier_risk.csv" table="[ops_supplier_risk#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="category" ordinal="0" />
+            <column datatype="string" name="seller_state" ordinal="1" />
+            <column datatype="integer" name="shipments" ordinal="2" />
+            <column datatype="real" name="lead_time_mean_days" ordinal="3" />
+            <column datatype="real" name="lead_time_std_days" ordinal="4" />
+            <column datatype="real" name="lead_time_p50_days" ordinal="5" />
+            <column datatype="real" name="lead_time_p95_days" ordinal="6" />
+            <column datatype="real" name="exception_rate" ordinal="7" />
+            <column datatype="real" name="lead_time_cv" ordinal="8" />
+            <column datatype="real" name="tail_ratio_p95_p50" ordinal="9" />
+            <column datatype="real" name="late_delivery_rate" ordinal="10" />
+            <column datatype="real" name="avg_days_late" ordinal="11" />
+            <column datatype="real" name="revenue" ordinal="12" />
+            <column datatype="string" name="risk_flag" ordinal="13" />
+            <column datatype="real" name="revenue_exposed" ordinal="14" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+      <column caption="Seller State" datatype="string" name="[seller_state]" role="dimension" type="nominal" />
+      <column caption="Shipments" datatype="integer" name="[shipments]" role="measure" type="quantitative" />
+      <column caption="Lead Time Mean Days" datatype="real" name="[lead_time_mean_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time Std Days" datatype="real" name="[lead_time_std_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time P50 Days" datatype="real" name="[lead_time_p50_days]" role="measure" type="quantitative" />
+      <column caption="Lead Time P95 Days" datatype="real" name="[lead_time_p95_days]" role="measure" type="quantitative" />
+      <column caption="Exception Rate" datatype="real" name="[exception_rate]" role="measure" type="quantitative" />
+      <column caption="Lead Time CV" datatype="real" name="[lead_time_cv]" role="measure" type="quantitative" />
+      <column caption="Tail Ratio P95 P50" datatype="real" name="[tail_ratio_p95_p50]" role="measure" type="quantitative" />
+      <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+      <column caption="Avg Days Late" datatype="real" name="[avg_days_late]" role="measure" type="quantitative" />
+      <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+      <column caption="Risk Flag" datatype="string" name="[risk_flag]" role="dimension" type="nominal" />
+      <column caption="Revenue Exposed" datatype="real" name="[revenue_exposed]" role="measure" type="quantitative" />
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name="Action Queue">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Reorder Alerts" name="federated.9de7fa3a5b35" />
+          </datasources>
+          <datasource-dependencies datasource="federated.9de7fa3a5b35">
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+            <column caption="Recommended Order Units" datatype="real" name="[recommended_order_units]" role="measure" type="quantitative" />
+            <column-instance column="[recommended_order_units]" derivation="Sum" name="[sum:recommended_order_units:qk]" pivot="key" type="quantitative" />
+            <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+            <column-instance column="[stock_status]" derivation="None" name="[none:stock_status:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+            <encodings>
+              <color column="[federated.9de7fa3a5b35].[none:stock_status:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.9de7fa3a5b35].[none:category:nk]</rows>
+        <cols>[federated.9de7fa3a5b35].[sum:recommended_order_units:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Days To Stockout">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Reorder Alerts" name="federated.9de7fa3a5b35" />
+          </datasources>
+          <datasource-dependencies datasource="federated.9de7fa3a5b35">
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+            <column caption="Days To Stockout" datatype="real" name="[days_to_stockout]" role="measure" type="quantitative" />
+            <column-instance column="[days_to_stockout]" derivation="Sum" name="[sum:days_to_stockout:qk]" pivot="key" type="quantitative" />
+            <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+            <column-instance column="[stock_status]" derivation="None" name="[none:stock_status:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+            <encodings>
+              <color column="[federated.9de7fa3a5b35].[none:stock_status:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.9de7fa3a5b35].[none:category:nk]</rows>
+        <cols>[federated.9de7fa3a5b35].[sum:days_to_stockout:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Cover vs Lead Time">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Inventory Position" name="federated.5ed812472a0c" />
+          </datasources>
+          <datasource-dependencies datasource="federated.5ed812472a0c">
+            <column caption="Weeks Of Cover" datatype="real" name="[weeks_of_cover]" role="measure" type="quantitative" />
+            <column-instance column="[weeks_of_cover]" derivation="Avg" name="[avg:weeks_of_cover:qk]" pivot="key" type="quantitative" />
+            <column caption="Lead Time Mean Days" datatype="real" name="[lead_time_mean_days]" role="measure" type="quantitative" />
+            <column-instance column="[lead_time_mean_days]" derivation="Avg" name="[avg:lead_time_mean_days:qk]" pivot="key" type="quantitative" />
+            <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+            <column-instance column="[stock_status]" derivation="None" name="[none:stock_status:nk]" pivot="key" type="nominal" />
+            <column caption="Forecast Units Horizon" datatype="real" name="[forecast_units_horizon]" role="measure" type="quantitative" />
+            <column-instance column="[forecast_units_horizon]" derivation="Sum" name="[sum:forecast_units_horizon:qk]" pivot="key" type="quantitative" />
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Circle" />
+            <encodings>
+              <color column="[federated.5ed812472a0c].[none:stock_status:nk]" />
+              <size column="[federated.5ed812472a0c].[sum:forecast_units_horizon:qk]" />
+              <text column="[federated.5ed812472a0c].[none:category:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.5ed812472a0c].[avg:weeks_of_cover:qk]</rows>
+        <cols>[federated.5ed812472a0c].[avg:lead_time_mean_days:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Projected Shortfall">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Inventory Position" name="federated.5ed812472a0c" />
+          </datasources>
+          <datasource-dependencies datasource="federated.5ed812472a0c">
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+            <column caption="Projected Shortfall Units" datatype="real" name="[projected_shortfall_units]" role="measure" type="quantitative" />
+            <column-instance column="[projected_shortfall_units]" derivation="Sum" name="[sum:projected_shortfall_units:qk]" pivot="key" type="quantitative" />
+            <column caption="Stock Status" datatype="string" name="[stock_status]" role="dimension" type="nominal" />
+            <column-instance column="[stock_status]" derivation="None" name="[none:stock_status:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+            <encodings>
+              <color column="[federated.5ed812472a0c].[none:stock_status:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.5ed812472a0c].[none:category:nk]</rows>
+        <cols>[federated.5ed812472a0c].[sum:projected_shortfall_units:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Supplier Lane Risk">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Supplier Risk" name="federated.46ae42d0309d" />
+          </datasources>
+          <datasource-dependencies datasource="federated.46ae42d0309d">
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+            <column caption="Seller State" datatype="string" name="[seller_state]" role="dimension" type="nominal" />
+            <column-instance column="[seller_state]" derivation="None" name="[none:seller_state:nk]" pivot="key" type="nominal" />
+            <column caption="Lead Time CV" datatype="real" name="[lead_time_cv]" role="measure" type="quantitative" />
+            <column-instance column="[lead_time_cv]" derivation="Avg" name="[avg:lead_time_cv:qk]" pivot="key" type="quantitative" />
+            <column caption="Risk Flag" datatype="string" name="[risk_flag]" role="dimension" type="nominal" />
+            <column-instance column="[risk_flag]" derivation="None" name="[none:risk_flag:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <filter class="categorical" column="[federated.46ae42d0309d].[none:risk_flag:nk]">
+            <groupfilter function="union" user_ui_enabled="true">
+              <groupfilter function="member" level="[federated.46ae42d0309d].[none:risk_flag:nk]" member="&quot;HIGH&quot;" />
+              <groupfilter function="member" level="[federated.46ae42d0309d].[none:risk_flag:nk]" member="&quot;MEDIUM&quot;" />
+            </groupfilter>
+          </filter>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Square" />
+            <encodings>
+              <color column="[federated.46ae42d0309d].[avg:lead_time_cv:qk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.46ae42d0309d].[none:category:nk]</rows>
+        <cols>[federated.46ae42d0309d].[none:seller_state:nk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name="Operations Command Centre">
+      <style />
+      <size maxheight="900" maxwidth="1600" minheight="900" minwidth="1600" />
+      <zones>
+        <zone h="100000" id="1" type-v2="layout-basic" w="100000" x="0" y="0">
+          <zone h="6000" id="2" w="100000" x="0" y="0" type-v2="text">
+            <formatted-text>
+              <run>INVENTORY OPERATIONS COMMAND CENTRE - action required this week</run>
+            </formatted-text>
+          </zone>
+          <zone h="44000" id="3" w="50000" x="0" y="6000" name="Action Queue" />
+          <zone h="44000" id="4" w="50000" x="0" y="50000" name="Days To Stockout" />
+          <zone h="44000" id="5" w="50000" x="50000" y="6000" name="Cover vs Lead Time" />
+          <zone h="38000" id="6" w="50000" x="50000" y="50000" name="Projected Shortfall" />
+          <zone h="6000" id="7" w="50000" x="50000" y="88000" type-v2="text">
+            <formatted-text>
+              <run>Stock positions are simulated from a documented policy (6 weeks opening cover, 95% service level). Forecast demand and supplier lead times are derived from actual order and delivery data.</run>
+            </formatted-text>
+          </zone>
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height="30">
+    <window class="worksheet" name="Action Queue" />
+    <window class="worksheet" name="Days To Stockout" />
+    <window class="worksheet" name="Cover vs Lead Time" />
+    <window class="worksheet" name="Projected Shortfall" />
+    <window class="worksheet" name="Supplier Lane Risk" />
+    <window class="dashboard" maximized="true" name="Operations Command Centre">
+      <viewpoints />
+    </window>
+  </windows>
+</workbook>

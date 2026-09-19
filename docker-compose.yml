@@ -1,0 +1,38 @@
+# Local stand-ins for the two operational source systems.
+# Postgres  -> the retailer's order-management system (fixed, relational schema)
+# MongoDB   -> the web platform's event store (variable, semi-structured documents)
+services:
+  postgres:
+    image: postgres:16
+    container_name: retail_pg
+    environment:
+      POSTGRES_USER: retail
+      POSTGRES_PASSWORD: retail
+      POSTGRES_DB: retail
+    ports: ["5433:5432"]   # 5433 on the host: the default 5432 is often already taken
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U retail -d retail"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    container_name: retail_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: retail
+      MONGO_INITDB_ROOT_PASSWORD: retail
+    ports: ["27017:27017"]
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+  mongodata:

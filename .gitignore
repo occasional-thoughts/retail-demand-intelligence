@@ -1,0 +1,36 @@
+# data is reproducible from Kaggle + scripts, never commit it
+data/raw/*
+data/01_bronze/*
+data/02_silver/*
+data/03_gold/*
+data/quarantine/*
+data/08_reporting/*
+!data/**/.gitkeep
+
+# secrets
+conf/local/*
+!conf/local/.gitkeep
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# spark
+spark-warehouse/
+metastore_db/
+derby.log
+
+# os
+.DS_Store
+
+# Tableau working files (the .twb sources ARE committed; these are not)
+*.twbx
+*.hyper
+Book*.twb
+
+# KNIME
+knime/output/*
+!knime/output/.gitkeep

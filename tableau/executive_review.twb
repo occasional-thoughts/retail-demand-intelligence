@@ -1,0 +1,383 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<workbook source-build="2024.1.0" source-platform="mac" version="18.1">
+  <preferences />
+  <datasources>
+    <datasource caption="Revenue Trend" inline="true" name="federated.10424ea7d46a" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="exec_revenue_trend" name="textscan.2f620c901c8a">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="exec_revenue_trend.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.2f620c901c8a" name="exec_revenue_trend.csv" table="[exec_revenue_trend#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="date" name="month" ordinal="0" />
+            <column datatype="real" name="revenue" ordinal="1" />
+            <column datatype="integer" name="orders" ordinal="2" />
+            <column datatype="integer" name="items" ordinal="3" />
+            <column datatype="integer" name="customers" ordinal="4" />
+            <column datatype="real" name="avg_freight" ordinal="5" />
+            <column datatype="real" name="late_delivery_rate" ordinal="6" />
+            <column datatype="real" name="avg_order_value" ordinal="7" />
+            <column datatype="real" name="items_per_order" ordinal="8" />
+            <column datatype="real" name="revenue_mom_pct" ordinal="9" />
+            <column datatype="real" name="revenue_yoy_pct" ordinal="10" />
+            <column datatype="real" name="revenue_3m_ma" ordinal="11" />
+            <column datatype="real" name="cumulative_revenue" ordinal="12" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Month" datatype="date" name="[month]" role="dimension" type="ordinal" />
+      <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+      <column caption="Orders" datatype="integer" name="[orders]" role="measure" type="quantitative" />
+      <column caption="Items" datatype="integer" name="[items]" role="measure" type="quantitative" />
+      <column caption="Customers" datatype="integer" name="[customers]" role="measure" type="quantitative" />
+      <column caption="Avg Freight" datatype="real" name="[avg_freight]" role="measure" type="quantitative" />
+      <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+      <column caption="Avg Order Value" datatype="real" name="[avg_order_value]" role="measure" type="quantitative" />
+      <column caption="Items Per Order" datatype="real" name="[items_per_order]" role="measure" type="quantitative" />
+      <column caption="Revenue MOM PCT" datatype="real" name="[revenue_mom_pct]" role="measure" type="quantitative" />
+      <column caption="Revenue YOY PCT" datatype="real" name="[revenue_yoy_pct]" role="measure" type="quantitative" />
+      <column caption="Revenue 3m MA" datatype="real" name="[revenue_3m_ma]" role="measure" type="quantitative" />
+      <column caption="Cumulative Revenue" datatype="real" name="[cumulative_revenue]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="Segment Value" inline="true" name="federated.c4f821bfadfb" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="exec_segment_value" name="textscan.9e8f78e77341">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="exec_segment_value.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.9e8f78e77341" name="exec_segment_value.csv" table="[exec_segment_value#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="segment" ordinal="0" />
+            <column datatype="integer" name="customers" ordinal="1" />
+            <column datatype="real" name="revenue" ordinal="2" />
+            <column datatype="real" name="avg_order_value" ordinal="3" />
+            <column datatype="real" name="avg_frequency" ordinal="4" />
+            <column datatype="real" name="avg_recency_days" ordinal="5" />
+            <column datatype="real" name="avg_review_score" ordinal="6" />
+            <column datatype="real" name="avg_sentiment" ordinal="7" />
+            <column datatype="real" name="return_rate" ordinal="8" />
+            <column datatype="real" name="avg_churn_risk" ordinal="9" />
+            <column datatype="real" name="relative_churn_risk" ordinal="10" />
+            <column datatype="real" name="revenue_at_risk" ordinal="11" />
+            <column datatype="real" name="expected_retained_revenue" ordinal="12" />
+            <column datatype="real" name="revenue_share_pct" ordinal="13" />
+            <column datatype="real" name="customer_share_pct" ordinal="14" />
+            <column datatype="real" name="revenue_per_customer" ordinal="15" />
+            <column datatype="real" name="value_index" ordinal="16" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Segment" datatype="string" name="[segment]" role="dimension" type="nominal" />
+      <column caption="Customers" datatype="integer" name="[customers]" role="measure" type="quantitative" />
+      <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+      <column caption="Avg Order Value" datatype="real" name="[avg_order_value]" role="measure" type="quantitative" />
+      <column caption="Avg Frequency" datatype="real" name="[avg_frequency]" role="measure" type="quantitative" />
+      <column caption="Avg Recency Days" datatype="real" name="[avg_recency_days]" role="measure" type="quantitative" />
+      <column caption="Avg Review Score" datatype="real" name="[avg_review_score]" role="measure" type="quantitative" />
+      <column caption="Avg Sentiment" datatype="real" name="[avg_sentiment]" role="measure" type="quantitative" />
+      <column caption="Return Rate" datatype="real" name="[return_rate]" role="measure" type="quantitative" />
+      <column caption="Avg Churn Risk" datatype="real" name="[avg_churn_risk]" role="measure" type="quantitative" />
+      <column caption="Relative Churn Risk" datatype="real" name="[relative_churn_risk]" role="measure" type="quantitative" />
+      <column caption="Revenue At Risk" datatype="real" name="[revenue_at_risk]" role="measure" type="quantitative" />
+      <column caption="Expected Retained Revenue" datatype="real" name="[expected_retained_revenue]" role="measure" type="quantitative" />
+      <column caption="Revenue Share PCT" datatype="real" name="[revenue_share_pct]" role="measure" type="quantitative" />
+      <column caption="Customer Share PCT" datatype="real" name="[customer_share_pct]" role="measure" type="quantitative" />
+      <column caption="Revenue Per Customer" datatype="real" name="[revenue_per_customer]" role="measure" type="quantitative" />
+      <column caption="Value Index" datatype="real" name="[value_index]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="Churn Exposure" inline="true" name="federated.62525769d1da" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="exec_churn_exposure" name="textscan.55da57fbb4e7">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="exec_churn_exposure.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.55da57fbb4e7" name="exec_churn_exposure.csv" table="[exec_churn_exposure#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="state" ordinal="0" />
+            <column datatype="integer" name="customers" ordinal="1" />
+            <column datatype="real" name="revenue" ordinal="2" />
+            <column datatype="real" name="avg_churn_risk" ordinal="3" />
+            <column datatype="real" name="relative_churn_risk" ordinal="4" />
+            <column datatype="real" name="revenue_at_risk" ordinal="5" />
+            <column datatype="real" name="expected_retained_revenue" ordinal="6" />
+            <column datatype="real" name="avg_review_score" ordinal="7" />
+            <column datatype="real" name="avg_sentiment" ordinal="8" />
+            <column datatype="real" name="late_delivery_rate" ordinal="9" />
+            <column datatype="real" name="actual_return_rate" ordinal="10" />
+            <column datatype="real" name="revenue_at_risk_pct" ordinal="11" />
+            <column datatype="real" name="share_of_total_exposure" ordinal="12" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="State" datatype="string" name="[state]" role="dimension" type="nominal" />
+      <column caption="Customers" datatype="integer" name="[customers]" role="measure" type="quantitative" />
+      <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+      <column caption="Avg Churn Risk" datatype="real" name="[avg_churn_risk]" role="measure" type="quantitative" />
+      <column caption="Relative Churn Risk" datatype="real" name="[relative_churn_risk]" role="measure" type="quantitative" />
+      <column caption="Revenue At Risk" datatype="real" name="[revenue_at_risk]" role="measure" type="quantitative" />
+      <column caption="Expected Retained Revenue" datatype="real" name="[expected_retained_revenue]" role="measure" type="quantitative" />
+      <column caption="Avg Review Score" datatype="real" name="[avg_review_score]" role="measure" type="quantitative" />
+      <column caption="Avg Sentiment" datatype="real" name="[avg_sentiment]" role="measure" type="quantitative" />
+      <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+      <column caption="Actual Return Rate" datatype="real" name="[actual_return_rate]" role="measure" type="quantitative" />
+      <column caption="Revenue At Risk PCT" datatype="real" name="[revenue_at_risk_pct]" role="measure" type="quantitative" />
+      <column caption="Share Of Total Exposure" datatype="real" name="[share_of_total_exposure]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="Sentiment Trend" inline="true" name="federated.1bbb05d2297a" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="exec_sentiment_trend" name="textscan.e8dd576a9ac9">
+            <connection class="textscan" directory="/Users/abish/Downloads/retail-intel/data/08_reporting" filename="exec_sentiment_trend.csv" password="" server="" />
+          </named-connection>
+        </named-connections>
+        <relation connection="textscan.e8dd576a9ac9" name="exec_sentiment_trend.csv" table="[exec_sentiment_trend#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="date" name="month" ordinal="0" />
+            <column datatype="string" name="category" ordinal="1" />
+            <column datatype="integer" name="reviews" ordinal="2" />
+            <column datatype="integer" name="reviews_with_text" ordinal="3" />
+            <column datatype="real" name="avg_sentiment" ordinal="4" />
+            <column datatype="real" name="avg_review_score" ordinal="5" />
+            <column datatype="real" name="pct_negative" ordinal="6" />
+            <column datatype="real" name="late_delivery_rate" ordinal="7" />
+            <column datatype="real" name="avg_days_late" ordinal="8" />
+          </columns>
+        </relation>
+      </connection>
+      <column caption="Month" datatype="date" name="[month]" role="dimension" type="ordinal" />
+      <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+      <column caption="Reviews" datatype="integer" name="[reviews]" role="measure" type="quantitative" />
+      <column caption="Reviews With Text" datatype="integer" name="[reviews_with_text]" role="measure" type="quantitative" />
+      <column caption="Avg Sentiment" datatype="real" name="[avg_sentiment]" role="measure" type="quantitative" />
+      <column caption="Avg Review Score" datatype="real" name="[avg_review_score]" role="measure" type="quantitative" />
+      <column caption="PCT Negative" datatype="real" name="[pct_negative]" role="measure" type="quantitative" />
+      <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+      <column caption="Avg Days Late" datatype="real" name="[avg_days_late]" role="measure" type="quantitative" />
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name="Revenue Trajectory">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Revenue Trend" name="federated.10424ea7d46a" />
+          </datasources>
+          <datasource-dependencies datasource="federated.10424ea7d46a">
+            <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+            <column-instance column="[revenue]" derivation="Sum" name="[sum:revenue:qk]" pivot="key" type="quantitative" />
+            <column caption="Month" datatype="date" name="[month]" role="dimension" type="ordinal" />
+            <column-instance column="[month]" derivation="None" name="[none:month:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Line" />
+          </pane>
+        </panes>
+        <rows>[federated.10424ea7d46a].[sum:revenue:qk]</rows>
+        <cols>[federated.10424ea7d46a].[none:month:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Average Order Value">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Revenue Trend" name="federated.10424ea7d46a" />
+          </datasources>
+          <datasource-dependencies datasource="federated.10424ea7d46a">
+            <column caption="Avg Order Value" datatype="real" name="[avg_order_value]" role="measure" type="quantitative" />
+            <column-instance column="[avg_order_value]" derivation="Avg" name="[avg:avg_order_value:qk]" pivot="key" type="quantitative" />
+            <column caption="Month" datatype="date" name="[month]" role="dimension" type="ordinal" />
+            <column-instance column="[month]" derivation="None" name="[none:month:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Line" />
+          </pane>
+        </panes>
+        <rows>[federated.10424ea7d46a].[avg:avg_order_value:qk]</rows>
+        <cols>[federated.10424ea7d46a].[none:month:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Where The Value Is">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Segment Value" name="federated.c4f821bfadfb" />
+          </datasources>
+          <datasource-dependencies datasource="federated.c4f821bfadfb">
+            <column caption="Revenue Share PCT" datatype="real" name="[revenue_share_pct]" role="measure" type="quantitative" />
+            <column-instance column="[revenue_share_pct]" derivation="Sum" name="[sum:revenue_share_pct:qk]" pivot="key" type="quantitative" />
+            <column caption="Customer Share PCT" datatype="real" name="[customer_share_pct]" role="measure" type="quantitative" />
+            <column-instance column="[customer_share_pct]" derivation="Sum" name="[sum:customer_share_pct:qk]" pivot="key" type="quantitative" />
+            <column caption="Relative Churn Risk" datatype="real" name="[relative_churn_risk]" role="measure" type="quantitative" />
+            <column-instance column="[relative_churn_risk]" derivation="Avg" name="[avg:relative_churn_risk:qk]" pivot="key" type="quantitative" />
+            <column caption="Revenue" datatype="real" name="[revenue]" role="measure" type="quantitative" />
+            <column-instance column="[revenue]" derivation="Sum" name="[sum:revenue:qk]" pivot="key" type="quantitative" />
+            <column caption="Segment" datatype="string" name="[segment]" role="dimension" type="nominal" />
+            <column-instance column="[segment]" derivation="None" name="[none:segment:nk]" pivot="key" type="nominal" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Circle" />
+            <encodings>
+              <color column="[federated.c4f821bfadfb].[avg:relative_churn_risk:qk]" />
+              <size column="[federated.c4f821bfadfb].[sum:revenue:qk]" />
+              <text column="[federated.c4f821bfadfb].[none:segment:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.c4f821bfadfb].[sum:revenue_share_pct:qk]</rows>
+        <cols>[federated.c4f821bfadfb].[sum:customer_share_pct:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Churn Exposure By State">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Churn Exposure" name="federated.62525769d1da" />
+          </datasources>
+          <datasource-dependencies datasource="federated.62525769d1da">
+            <column caption="State" datatype="string" name="[state]" role="dimension" type="nominal" />
+            <column-instance column="[state]" derivation="None" name="[none:state:nk]" pivot="key" type="nominal" />
+            <column caption="Revenue At Risk" datatype="real" name="[revenue_at_risk]" role="measure" type="quantitative" />
+            <column-instance column="[revenue_at_risk]" derivation="Sum" name="[sum:revenue_at_risk:qk]" pivot="key" type="quantitative" />
+            <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+            <column-instance column="[late_delivery_rate]" derivation="Avg" name="[avg:late_delivery_rate:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+            <encodings>
+              <color column="[federated.62525769d1da].[avg:late_delivery_rate:qk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.62525769d1da].[none:state:nk]</rows>
+        <cols>[federated.62525769d1da].[sum:revenue_at_risk:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Sentiment vs Late Delivery">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Sentiment Trend" name="federated.1bbb05d2297a" />
+          </datasources>
+          <datasource-dependencies datasource="federated.1bbb05d2297a">
+            <column caption="Avg Sentiment" datatype="real" name="[avg_sentiment]" role="measure" type="quantitative" />
+            <column-instance column="[avg_sentiment]" derivation="Avg" name="[avg:avg_sentiment:qk]" pivot="key" type="quantitative" />
+            <column caption="Late Delivery Rate" datatype="real" name="[late_delivery_rate]" role="measure" type="quantitative" />
+            <column-instance column="[late_delivery_rate]" derivation="Avg" name="[avg:late_delivery_rate:qk]" pivot="key" type="quantitative" />
+            <column caption="Month" datatype="date" name="[month]" role="dimension" type="ordinal" />
+            <column-instance column="[month]" derivation="None" name="[none:month:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Circle" />
+            <encodings>
+              <color column="[federated.1bbb05d2297a].[none:month:qk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.1bbb05d2297a].[avg:avg_sentiment:qk]</rows>
+        <cols>[federated.1bbb05d2297a].[avg:late_delivery_rate:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Category Sentiment Risk">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Sentiment Trend" name="federated.1bbb05d2297a" />
+          </datasources>
+          <datasource-dependencies datasource="federated.1bbb05d2297a">
+            <column caption="Category" datatype="string" name="[category]" role="dimension" type="nominal" />
+            <column-instance column="[category]" derivation="None" name="[none:category:nk]" pivot="key" type="nominal" />
+            <column caption="Avg Sentiment" datatype="real" name="[avg_sentiment]" role="measure" type="quantitative" />
+            <column-instance column="[avg_sentiment]" derivation="Avg" name="[avg:avg_sentiment:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option="selection-relaxation-allow">
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+            <encodings>
+              <color column="[federated.1bbb05d2297a].[avg:avg_sentiment:qk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[federated.1bbb05d2297a].[none:category:nk]</rows>
+        <cols>[federated.1bbb05d2297a].[avg:avg_sentiment:qk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name="Executive Review">
+      <style />
+      <size maxheight="1600" maxwidth="1200" minheight="1600" minwidth="1200" />
+      <zones>
+        <zone h="100000" id="1" type-v2="layout-basic" w="100000" x="0" y="0">
+          <zone h="4000" id="2" w="100000" x="0" y="0" type-v2="text">
+            <formatted-text>
+              <run>RETAIL PERFORMANCE &amp; CUSTOMER INTELLIGENCE - monthly leadership review</run>
+            </formatted-text>
+          </zone>
+          <zone h="24000" id="3" w="100000" x="0" y="4000" name="Revenue Trajectory" />
+          <zone h="16000" id="4" w="100000" x="0" y="28000" name="Average Order Value" />
+          <zone h="28000" id="5" w="50000" x="0" y="44000" name="Where The Value Is" />
+          <zone h="28000" id="6" w="50000" x="50000" y="44000" name="Churn Exposure By State" />
+          <zone h="28000" id="7" w="50000" x="0" y="72000" name="Sentiment vs Late Delivery" />
+          <zone h="28000" id="8" w="50000" x="50000" y="72000" name="Category Sentiment Risk" />
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+  <windows source-height="30">
+    <window class="worksheet" name="Revenue Trajectory" />
+    <window class="worksheet" name="Average Order Value" />
+    <window class="worksheet" name="Where The Value Is" />
+    <window class="worksheet" name="Churn Exposure By State" />
+    <window class="worksheet" name="Sentiment vs Late Delivery" />
+    <window class="worksheet" name="Category Sentiment Risk" />
+    <window class="dashboard" maximized="true" name="Executive Review">
+      <viewpoints />
+    </window>
+  </windows>
+</workbook>
