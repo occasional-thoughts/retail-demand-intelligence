@@ -199,8 +199,14 @@ def inject(name: str, payload: dict) -> Path:
 
 def main() -> int:
     OUT.mkdir(exist_ok=True)
-    for name, payload in (("operations", build_operations()),
-                          ("executive", build_executive())):
+    scorecard = ROOT / "knime" / "expected_figures.json"
+    pages = [("operations", build_operations()), ("executive", build_executive())]
+    if scorecard.exists():
+        pages.append(("scorecard", json.loads(scorecard.read_text())))
+    else:
+        log.warning("skipping scorecard page: run scripts/knime_reference_figures.py first")
+
+    for name, payload in pages:
         path = OUT / f"{name}.json"
         path.write_text(json.dumps(payload, separators=(",", ":")))
         built = inject(name, payload)

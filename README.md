@@ -17,6 +17,7 @@ operational and strategic decisions.
 |---|---|
 | **Inventory Operations** &mdash; forward 8 weeks, category grain, daily | https://claude.ai/artifact/1jan7w6LEFmvnbiEQCDM1g |
 | **Retail Performance Review** &mdash; backward 23 months, company grain, monthly | https://claude.ai/artifact/1oTTzRGbfGZRCCthhtzguu |
+| **Source Data Scorecard** &mdash; raw-file profiling for a data steward | https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ |
 
 ---
 
@@ -208,9 +209,27 @@ without raising anything, so it is asserted here instead.
 
 ### 6. The no-code layer, and why it is not redundant
 
-Build guide: **[docs/knime_workflow.md](docs/knime_workflow.md)** — verified
-node-by-node against KNIME 5.12.0, with every factory class confirmed present
-in the install.
+The **[Source Data Scorecard](https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ)**
+is the output side of this layer: four raw files, 13 checks, every finding
+mapped to the pipeline decision it justified. Regenerate it with
+`make knime-figures`.
+
+The KNIME workflow itself is **not built**. A `.knwf` is version-bound XML whose
+node settings must match the installed plugin schema exactly, KNIME 5.12 ships
+no headless batch executor on the public update site, and its CSV Reader
+persists through a custom serializer — so a generated file could be neither
+authored reliably nor executed to prove it works. Shipping an unverifiable
+workflow would have been worse than shipping none.
+
+What was done instead: **[docs/knime_workflow.md](docs/knime_workflow.md)** is a
+node-by-node recipe verified against a real KNIME 5.12.0 install, with all ten
+factory classes confirmed present, and every step carrying the figure it should
+produce so the build is self-checking.
+
+One finding from that verification is worth keeping: profiling `order_items`
+alone — which the original recipe called for — finds almost nothing. Every hard
+check passes across all 112,650 rows. The defects live in `products` and
+`reviews`, so the recipe now profiles those too.
 
 The KNIME workflow profiles raw data quality and emits a scorecard. It is
 deliberately **not** wired into the Python pipeline. The analyst who owns
@@ -372,6 +391,7 @@ src/retail_intel/
     churn/                   ablation, model, scoring
     serving/                 operational and executive extracts
 dashboards/                  web dashboard templates + built pages
+knime/expected_figures.json  reference figures for verifying the KNIME build
 tableau/                     generated .twb workbooks (operations + executive)
 scripts/
   build_web_dashboards.py    payloads + injection for the published pages
