@@ -66,8 +66,8 @@
  ── separate, deliberately not connected ──────────────────────────────────
 
 ┌──────────────────┐            ┌─────────────────────┐
-│  raw CSV         │───────────▶│  KNIME              │──▶ data-quality
-│  order_items     │            │  no-code profiling  │    scorecard
+│  4 raw CSVs      │───────────▶│  QUALITY EXPLORER   │──▶ live score +
+│  as they arrived │            │  tunable rules      │    remediation map
 └──────────────────┘            └─────────────────────┘    (for analysts)
 ```
 
@@ -83,7 +83,7 @@ a capability, not just changing a name.
 | **PySpark** | The carrier scan feed is ~2.9M rows generated from a 112k-row seed, partitioned by month, then aggregated with percentiles. Larger than its own source, shuffle-heavy, and partition-aware on write — the smallest honest case for a distributed engine. |
 | **Kedro** | 29 nodes across 7 pipelines with an explicit DAG. Connections live in the catalog, so nodes are pure functions of their inputs — which is what lets the entire test suite run in seconds with no database. A failing layer can be re-run alone. |
 | **Python / scikit-learn** | Walk-forward backtesting and a paired bootstrap ablation are bespoke evaluation logic. `HistGradientBoosting*` was chosen over LightGBM/XGBoost specifically because it needs no external OpenMP library — one fewer install failure between a reviewer and a working repo. |
-| **KNIME** | A different *audience*, not a different implementation. See `docs/knime_workflow.md`. |
+| **Quality explorer** | A different *audience*, not a different implementation. Outlier rules are tunable in the page, so a steward changes a threshold without a deploy. See `docs/data_quality_layer.md`. |
 | **Tableau** | Two workbooks for two audiences. See `docs/tableau_build_guide.md`. |
 | **launchd / GitHub Actions** | Scheduled refresh. The local stand-in for Fabric Data Factory. |
 

@@ -17,7 +17,7 @@ operational and strategic decisions.
 |---|---|
 | **Inventory Operations** &mdash; forward 8 weeks, category grain, daily | https://claude.ai/artifact/1jan7w6LEFmvnbiEQCDM1g |
 | **Retail Performance Review** &mdash; backward 23 months, company grain, monthly | https://claude.ai/artifact/1oTTzRGbfGZRCCthhtzguu |
-| **Source Data Scorecard** &mdash; raw-file profiling for a data steward | https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ |
+| **Source Data Quality** &mdash; low-code profiling with tunable rules | https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ |
 
 ---
 
@@ -67,7 +67,7 @@ Parquet    ─┘    (Spark)      │          │                            �
                               │          ▼
                               │     quarantine
                               ▼
-                        KNIME (separate, no-code profiling)
+                    quality explorer (separate, low-code profiling)
 ```
 
 ### The three source systems, and why they are different on purpose
@@ -207,36 +207,39 @@ the operational workbook references no `exec_` extract and vice versa, and
 shelf with no matching `column-instance` renders an empty sheet in Tableau
 without raising anything, so it is asserted here instead.
 
-### 6. The no-code layer, and why it is not redundant
+### 6. A low-code layer that is not a second copy of the pipeline
 
-The **[Source Data Scorecard](https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ)**
-is the output side of this layer: four raw files, 13 checks, every finding
-mapped to the pipeline decision it justified. Regenerate it with
-`make knime-figures`.
+Full write-up: **[docs/data_quality_layer.md](docs/data_quality_layer.md)** &middot;
+**[live explorer](https://claude.ai/artifact/VjWJmUKzZWsns7wRktwBqJ)**
 
-The KNIME workflow itself is **not built**. A `.knwf` is version-bound XML whose
-node settings must match the installed plugin schema exactly, KNIME 5.12 ships
-no headless batch executor on the public update site, and its CSV Reader
-persists through a custom serializer — so a generated file could be neither
-authored reliably nor executed to prove it works. Shipping an unverifiable
-workflow would have been worse than shipping none.
+The pipeline validates what it loads. This layer answers a different question
+for a different reader: the data steward who needs to know what arrived in a
+file this morning, and who should be able to change a threshold without opening
+a repository or waiting on a deploy.
 
-What was done instead: **[docs/knime_workflow.md](docs/knime_workflow.md)** is a
-node-by-node recipe verified against a real KNIME 5.12.0 install, with all ten
-factory classes confirmed present, and every step carrying the figure it should
-produce so the build is self-checking.
+That is why the rules are **tunable in the page**, not hard-coded. Checks come
+in two kinds:
 
-One finding from that verification is worth keeping: profiling `order_items`
-alone — which the original recipe called for — finds almost nothing. Every hard
-check passes across all 112,650 rows. The defects live in `products` and
-`reviews`, so the recipe now profiles those too.
+- **fixed** &mdash; nulls, duplicates, key uniqueness. Nothing to tune; a null is a null.
+- **tunable** &mdash; outlier rules, where the answer depends on where you draw the
+  line. The profiler exports the full value distribution, so the page recomputes
+  the count at whatever fence the steward picks.
 
-The KNIME workflow profiles raw data quality and emits a scorecard. It is
-deliberately **not** wired into the Python pipeline. The analyst who owns
-supplier data quality is not going to open a repository to discover that 610
-products have no category — they need to profile a file the morning it arrives
-and hand the engineer a list. The workflow's findings are traced to the
-specific pipeline nodes that handle them.
+The steward can move the outlier fence, the penalty weights, the pass mark, and
+whether expected-sparsity checks score at all &mdash; and every figure recomputes
+live. The client-side arithmetic is verified against the Python profiler: at
+IQR &times;3.0 both report **13,189** warning rows, to the row.
+
+**What it found.** `order_items` is clean &mdash; every fixed check passes across all
+112,650 rows. The defects are elsewhere: 610 products with no category, 814
+duplicate review ids, 2,965 orders never delivered. Each one is mapped on the
+page to the pipeline decision it justified and the file that decision lives in.
+
+**One scoring judgement.** Counting the 58,247 reviews with no body as a warning
+drags the score to 53/100. That sparsity is precisely why review text sits in a
+document store, so those checks are reported as INFO and excluded by default
+&mdash; with a toggle, because it is an editorial call the steward is entitled to
+disagree with.
 
 ---
 
@@ -391,7 +394,7 @@ src/retail_intel/
     churn/                   ablation, model, scoring
     serving/                 operational and executive extracts
 dashboards/                  web dashboard templates + built pages
-knime/expected_figures.json  reference figures for verifying the KNIME build
+quality/source_profile.json  source profile behind the quality explorer
 tableau/                     generated .twb workbooks (operations + executive)
 scripts/
   build_web_dashboards.py    payloads + injection for the published pages
@@ -402,5 +405,5 @@ scripts/
   generate_events.py         event store + deliberate orphan injection
   local_db.sh                Docker-free database path
 tests/                       56 tests, database-free
-docs/                        architecture, KNIME guide, Tableau guide, memo
+docs/                        architecture, quality layer, Tableau guide, memo
 ```

@@ -199,12 +199,12 @@ def inject(name: str, payload: dict) -> Path:
 
 def main() -> int:
     OUT.mkdir(exist_ok=True)
-    scorecard = ROOT / "knime" / "expected_figures.json"
+    profile = ROOT / "quality" / "source_profile.json"
     pages = [("operations", build_operations()), ("executive", build_executive())]
-    if scorecard.exists():
-        pages.append(("scorecard", json.loads(scorecard.read_text())))
+    if profile.exists():
+        pages.append(("quality", json.loads(profile.read_text())))
     else:
-        log.warning("skipping scorecard page: run scripts/knime_reference_figures.py first")
+        log.warning("skipping quality page: run scripts/profile_sources.py first")
 
     for name, payload in pages:
         path = OUT / f"{name}.json"

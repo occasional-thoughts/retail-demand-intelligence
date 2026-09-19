@@ -5,14 +5,14 @@ PY := /opt/anaconda3/envs/retail/bin/python
 KEDRO := /opt/anaconda3/envs/retail/bin/kedro
 DOCKER := /Applications/Docker.app/Contents/Resources/bin/docker
 
-.PHONY: help up down sources load-sql load-mongo pipeline test lint clean all status
+.PHONY: help up down sources load-sql load-mongo pipeline quality dashboards test lint clean all status
 
 help:
 	@echo "make up         start Postgres + MongoDB"
 	@echo "make sources    build both source systems from data/raw/"
 	@echo "make pipeline   run the full Kedro pipeline"
 	@echo "make dashboards generate the Tableau workbooks and the web dashboards"
-	@echo "make knime-figures  reference figures to verify the KNIME workflow"
+	@echo "make quality     profile the raw sources for the data-quality layer"
 	@echo "make test       run the test suite"
 	@echo "make all        up -> sources -> pipeline"
 	@echo "make status     show what is running and what has been built"
@@ -49,14 +49,14 @@ forecasting: ; $(KEDRO) run --pipeline=forecasting
 churn:       ; $(KEDRO) run --pipeline=churn
 serving:     ; $(KEDRO) run --pipeline=serving
 
-dashboards:
+dashboards: quality
 	$(PY) scripts/build_tableau_workbooks.py
 	$(PY) scripts/build_web_dashboards.py
 
-# Reference figures for verifying the KNIME workflow. Deliberately not part of
-# the pipeline -- see docs/knime_workflow.md.
-knime-figures:
-	$(PY) scripts/knime_reference_figures.py
+# Source profiling for the data-quality layer. Deliberately outside the Kedro
+# pipeline -- see docs/data_quality_layer.md.
+quality:
+	$(PY) scripts/profile_sources.py
 
 test:
 	$(PY) -m pytest tests/ -v
