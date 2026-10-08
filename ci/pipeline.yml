@@ -1,0 +1,77 @@
+# GitHub Actions pipeline definition.
+#
+# This file lives in ci/ rather than .github/workflows/ for one practical
+# reason: pushing a file under .github/workflows/ requires a GitHub token
+# carrying the `workflow` OAuth scope, which the account that published this
+# repository does not grant. The definition is kept here verbatim so the CI
+# design is reviewable; to activate it, move this file to
+# .github/workflows/pipeline.yml and push with a `workflow`-scoped token.
+#
+#   gh auth refresh -h github.com -s workflow
+#   mkdir -p .github/workflows && git mv ci/pipeline.yml .github/workflows/
+#
+# CI for the pipeline.
+#
+# The full run needs Postgres and MongoDB, so both are started as service
+# containers. The tests themselves need neither -- nodes are pure functions --
+# which is why the test job runs first and fast, and the integration job only
+# runs if it passes.
+name: pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # weekly refresh, mirroring the launchd schedule used locally
+    - cron: "0 6 * * 1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt && pip install -e . --no-deps
+      - name: unit tests
+        run: pytest tests/ -v
+
+  integration:
+    needs: test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: retail
+          POSTGRES_PASSWORD: retail
+          POSTGRES_DB: retail
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U retail" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+      mongo:
+        image: mongo:7
+        env:
+          MONGO_INITDB_ROOT_USERNAME: retail
+          MONGO_INITDB_ROOT_PASSWORD: retail
+        ports: ["27017:27017"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - run: pip install -r requirements.txt && pip install -e . --no-deps
+      - name: fetch source data
+        run: |
+          echo "The Olist CSVs are not committed. In a real deployment this step"
+          echo "pulls them from object storage; for CI it is skipped."
+      - name: run pipeline
+        if: false   # enabled once the dataset is available to the runner
+        run: kedro run

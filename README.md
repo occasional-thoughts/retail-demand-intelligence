@@ -341,7 +341,7 @@ check stops complaining.
 | **Secrets** | `conf/local/` is gitignored; no credential is committed |
 | **Reproducibility** | fixed seeds throughout; the orphan-injection manifest is written to disk |
 | **Failure** | integrity breaches stop the run; quarantined rows are persisted with a reason |
-| **Scheduling** | launchd (`scripts/schedule/`) locally, GitHub Actions in CI |
+| **Scheduling** | launchd (`scripts/schedule/`) locally; the GitHub Actions definition is in `ci/pipeline.yml` |
 
 ---
 
